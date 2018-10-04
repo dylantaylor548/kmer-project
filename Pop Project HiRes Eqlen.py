@@ -49,7 +49,7 @@ def rem_redun_kmer(kmerdict):
             all_kmers.append(kmer)
     for kmer in all_kmers:
         if all_kmers.count(kmer) == len(filtered_dict):
-            for key in filtered_dict.keys():
+            for key in filtered_dict:
                 if kmer in filtered_dict[key]:
                     filtered_dict[key].remove(kmer)
     return filtered_dict
@@ -70,7 +70,7 @@ def reverse_dict(kmerdict):
 # (This has been tested and works)
 def generate_seq_counts(kmerdict):
     seq_counts = {}
-    for key in kmerdict.keys():
+    for key in kmerdict:
         seq_counts.setdefault(key,0)
     return seq_counts
 
@@ -79,7 +79,7 @@ def generate_seq_counts(kmerdict):
 # list of kmers, would the coverage of any of the genes drop below the required
 # coverage level (This has been tested and works for what it does)
 def checkcoverage(kmer,seq_kmers_dict,coverage_dict,cutoff):
-    for seq in seq_kmers_dict.keys():
+    for seq in seq_kmers_dict:
         if kmer in seq_kmers_dict[seq]:
             if coverage_dict[seq] - 1 < cutoff:
                 return False
@@ -89,7 +89,7 @@ def checkcoverage(kmer,seq_kmers_dict,coverage_dict,cutoff):
 #This is the explanationy stuff
 def findkmax(rev_dict,seq_w_kmer):
     kmax = ''
-    for kmer in seq_w_kmer.keys():
+    for kmer in seq_w_kmer:
         if kmax == '':
             kmax = kmer
         elif seq_w_kmer[kmer] > seq_w_kmer[kmax]:
@@ -110,7 +110,7 @@ def rep_kmers_indict(kmerdict,cutoff):
     seq_counts = generate_seq_counts(kmerdict)
     rep_kmer_list = []
     seq_w_kmer = {}
-    for kmer in rev_dict.keys():
+    for kmer in rev_dict:
         seq_w_kmer.setdefault(kmer,len(rev_dict[kmer]))
     while not all(count >= cutoff for count in seq_counts.values()):
         if rev_dict == {}:
@@ -122,7 +122,7 @@ def rep_kmers_indict(kmerdict,cutoff):
             print("Highest coverage kmer is: " + kmer_max + ", with worth: " + str(seq_w_kmer[kmer_max]) + " and coverage: " + str(len(rev_dict[kmer_max])))
             for seq in seq_counts:
                 if seq in rev_dict[kmer_max]:
-                    for kmer in seq_w_kmer.keys():
+                    for kmer in seq_w_kmer:
                         if (seq in rev_dict[kmer]) and (seq_counts[seq] < cutoff):
                             seq_w_kmer[kmer] = seq_w_kmer[kmer] - Fraction(1,cutoff)
                     seq_counts[seq] += 1
@@ -172,6 +172,6 @@ if rep_list:
 
 print("There are " + str(len(rep_list)) + " " + str(kmer_len) + "-mers in the representative list.")
 
-
+print("Hello")
 ############################################################################################################### ^^^ This is the part that does the code ^^^
 
