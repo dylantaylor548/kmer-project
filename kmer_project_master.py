@@ -131,20 +131,38 @@ def rep_kmers_indict(kmerdict,cutoff):
                     seq_counts[seq] += 1
 
             del seq_w_kmer[kmer_max]
-                            
+
     """print("\nChecking output for redundant kmers...\n")"""
     rep_list_copy = copy.deepcopy(rep_kmer_list)
     for kmer in rep_list_copy:
         if checkcoverage(kmer,kmerdict,seq_counts,cutoff):
             print(kmer + " is redundant.")
             rep_kmer_list.remove(kmer)
-                    
+
     return rep_kmer_list
 
 
 
 ############################################################################################################### vvv This is the part that does the code vvv
-
+# below is a function that we will use to read in a fasta file (if it works)
+"""
+# function reads in the fasta file
+def open_fasta():
+    fasta = {}
+    with open("TIGR02012.ffn") as opened_file:
+        for line in opened_file:
+            line = line.strip()
+            if not line:
+                continue
+            if line.startswith(">"):
+                sequence_name = line[1:]
+                if sequence_name not in fasta:
+                    fasta[sequence_name] = []
+                continue
+            sequence = line
+            fasta[sequence_name].append(sequence)
+    return fasta.values()
+"""
 kmerized_dir = {}
 
 directory = input("Please select the directory containing your .dna files ")
@@ -176,4 +194,3 @@ if rep_list:
 print("There are " + str(len(rep_list)) + " " + str(kmer_len) + "-mers in the representative list.")
 
 ############################################################################################################### ^^^ This is the part that does the code ^^^
-
