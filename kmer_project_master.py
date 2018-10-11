@@ -1,9 +1,9 @@
 
 import os
 import copy
-from Bio import SeqIO
+"""from Bio import SeqIO"""
 from fractions import Fraction
-
+import time
 
 # Takes a single dna sequence and returns all kmers as a list,
 # with each kmer appearing only once (This has been tested and works)
@@ -22,9 +22,9 @@ def kmerize(dna,kmer_size):
 # For a directory containing files each of one DNA sequence, creates a dictionary
 # with keywords: file_name and values: list of all kmers in that file
 # (This has been tested and works)
-def kmerize_directory(directory,kmer_size):
+"""def kmerize_directory(directory,kmer_size):
     kmerdict = {}
-    """print("Generating " + str(kmer_size)+ "-mers\n...")"""
+    print("Generating " + str(kmer_size)+ "-mers\n...")
     for file_name in os.listdir(directory):
         if file_name.endswith('.fasta'):
             file_path = (directory + '/' + file_name)
@@ -34,8 +34,27 @@ def kmerize_directory(directory,kmer_size):
                 kmers_in_dna = kmerize(sequence,kmer_size)
                 kmerdict[seq_name] = kmers_in_dna
     print("\nAll " + str(kmer_size)+ "-mers generated!\n")
+    return kmerdict"""
+def kmerize_directory(directory,kmer_size):
+    kmerdict = {}
+    print("Generating " + str(kmer_size)+ "-mers\n...")
+    for file_name in os.listdir(directory):
+        if file_name.endswith('.fasta'):
+            file_path = (directory + '/' + file_name)
+            print(file_path)
+            with open(file_path) as opened_file:
+                for line in opened_file:
+                    line = line.strip()
+                    if not line:
+                        continue
+                    if line.startswith(">"):
+                        sequence_name = line[1:]
+                        continue
+                    sequence = line
+                    kmers_in_dna= kmerize(sequence,kmer_size)
+                    kmerdict[sequence_name] = kmers_in_dna
+    print("\nAll " + str(kmer_size)+ "-mers generated!\n")
     return kmerdict
-
 
 # Takes a dictionary whose values are lists of kmers and removes the kmers present
 # in all of the lists from each list
@@ -131,38 +150,20 @@ def rep_kmers_indict(kmerdict,cutoff):
                     seq_counts[seq] += 1
 
             del seq_w_kmer[kmer_max]
-
+                            
     """print("\nChecking output for redundant kmers...\n")"""
     rep_list_copy = copy.deepcopy(rep_kmer_list)
     for kmer in rep_list_copy:
         if checkcoverage(kmer,kmerdict,seq_counts,cutoff):
             print(kmer + " is redundant.")
             rep_kmer_list.remove(kmer)
-
+                    
     return rep_kmer_list
 
 
 
 ############################################################################################################### vvv This is the part that does the code vvv
-# below is a function that we will use to read in a fasta file (if it works)
-"""
-# function reads in the fasta file
-def open_fasta():
-    fasta = {}
-    with open("TIGR02012.ffn") as opened_file:
-        for line in opened_file:
-            line = line.strip()
-            if not line:
-                continue
-            if line.startswith(">"):
-                sequence_name = line[1:]
-                if sequence_name not in fasta:
-                    fasta[sequence_name] = []
-                continue
-            sequence = line
-            fasta[sequence_name].append(sequence)
-    return fasta.values()
-"""
+
 kmerized_dir = {}
 
 directory = input("Please select the directory containing your .dna files ")
@@ -194,3 +195,4 @@ if rep_list:
 print("There are " + str(len(rep_list)) + " " + str(kmer_len) + "-mers in the representative list.")
 
 ############################################################################################################### ^^^ This is the part that does the code ^^^
+
