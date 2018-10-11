@@ -41,7 +41,6 @@ def kmerize_directory(directory,kmer_size):
     for file_name in os.listdir(directory):
         if file_name.endswith('.fasta'):
             file_path = (directory + '/' + file_name)
-            print(file_path)
             with open(file_path) as opened_file:
                 for line in opened_file:
                     line = line.strip()
