@@ -135,14 +135,14 @@ def rep_kmers_indict(kmerdict,cutoff):
                     seq_counts[seq] += 1
 
             del seq_w_kmer[kmer_max]
-                            
+
     """print("\nChecking output for redundant kmers...\n")"""
     rep_list_copy = copy.deepcopy(rep_kmer_list)
     for kmer in rep_list_copy:
         if checkcoverage(kmer,kmerdict,seq_counts,cutoff):
             print(kmer + " is redundant.")
             rep_kmer_list.remove(kmer)
-                    
+
     return rep_kmer_list
 
 
@@ -150,6 +150,7 @@ def rep_kmers_indict(kmerdict,cutoff):
 ############################################################################################################### vvv This is the part that does the code vvv
 
 directory = input("Choose a directory containing FASTA files: ")
+directory_out = input("Choose a path to save the png to: ")
 coverage_min = int(input("Input minimum coverage: "))
 coverage_max = int(input("Input maximum coverage: "))
 k_min = int(input("Input minimum k-value: "))
@@ -179,14 +180,17 @@ for c in range(coverage_min,coverage_max+1):
     ax1.plot(kmer_lens,run_times,"o",label='c='+str(c))
     ax2.plot(kmer_lens,rel_run_times,"o",label='c='+str(c))
 
+ax1.set_title("Runtime as a Function of K and C")
+ax2.set_title("Relative Runtime as a Function of K and C")
 ax1.set_xlabel("kmer size (bases)")
 ax1.set_ylabel("Run time (seconds)")
-plt.legend()
+ax1.legend()
+ax2.legend()
 ax2.set_xlabel("kmer size (bases)")
 ax2.set_ylabel("Relative run time (seconds/c)")
 plt.tight_layout()
+plt.savefig(directory_out+"/Runtime_Analysis"+".png")
 plt.show()
 
 
 ############################################################################################################### ^^^ This is the part that does the code ^^^
-
