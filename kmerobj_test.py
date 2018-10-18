@@ -41,26 +41,8 @@ def kmerizeseq(seq_name,seqnum,sequence,kmer_size):
     if (kmer_size <= len(sequence) and kmer_size >= 1):
         for start in range(0,len(sequence)-kmer_size+1):
             kmerseq = sequence[start:start+kmer_size]
-            
-            # The below section essentially goes through the existing list of Kmerobj
-            # objects and if it finds one with the same kmer attribute as the kmer currently
-            # defined (by the kmerseq variable) it adds that kmer's location to the
-            # locationlist attribute of the current Kmerobj in kmer_list. If it goes through
-            # the entirety of kmer_list without finding a match, it creates a new Kmerobj
-            # and appends it to kmer_list. Once it gone through every kmer in the sequence,
-            # it returns kmer_list.
-            match = False
-            position = 0
-            while((not match) and position < len(kmer_list)):
-                if kmerseq == kmer_list[position].kmer:
-                    match = True
-                else:
-                    position = position + 1
-            if position == len(kmer_list):
-                kmerinst = Kmerobj(kmer=kmerseq,locationlist=[start+seqnum],seqlist=[seq_name])
-                kmer_list.append(kmerinst)
-            else:
-                kmer_list[position].locationlist.append(start+seqnum)
+            kmerinst = Kmerobj(kmer=kmerseq,locationlist=[start+seqnum],seqlist=[seq_name])
+            kmer_list.append(kmerinst)
     return kmer_list
             
 
@@ -116,6 +98,4 @@ def kmerizefasta(file_path,kmer_size):
         return seq_cov_dict, tot_kmer_list
     else:
         print("That's not a fasta file. Try again.")
-
-
 
