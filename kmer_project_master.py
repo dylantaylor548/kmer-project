@@ -135,7 +135,7 @@ def rep_kmers_indict(kmerdict,cutoff):
         seq_w_kmer.setdefault(kmer,len(rev_dict[kmer]))
     while not all(count >= cutoff for count in seq_counts.values()):
         if rev_dict == {}:
-            print("Your value of p is too high, not enough unique kmers were found.")
+            print("Your value of c is too high, not enough unique kmers were found.")
             return
         else:
             kmer_max = findkmax(rev_dict,seq_w_kmer)

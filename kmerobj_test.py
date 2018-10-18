@@ -19,6 +19,15 @@ class Kmerobj(object):
             worth = 1
         self.worth = worth
 
+    def seqlistlen(self):
+        return len(self.seqlist)
+
+    def kmermin(self,kmerobj):
+        if self.kmer < kmerobj.kmer:
+            return self
+        else:
+            return kmerobj
+
 
 # This function essentially converts a sequence of bases into a list of Kmerobj objects
 # Such that each kmer in the sequence is represented in the list a single time. If the
@@ -30,7 +39,7 @@ def kmerizeseq(seq_name,seqnum,sequence,kmer_size):
     kmer_list = []
     sequence = sequence.upper()
     if (kmer_size <= len(sequence) and kmer_size >= 1):
-        for start in range(0,len(sequence)-kmer_size+1,1):
+        for start in range(0,len(sequence)-kmer_size+1):
             kmerseq = sequence[start:start+kmer_size]
             
             # The below section essentially goes through the existing list of Kmerobj
@@ -107,3 +116,6 @@ def kmerizefasta(file_path,kmer_size):
         return seq_cov_dict, tot_kmer_list
     else:
         print("That's not a fasta file. Try again.")
+
+
+
