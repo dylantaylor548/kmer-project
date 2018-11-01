@@ -165,7 +165,7 @@ def rep_kmers_indict(kmerdict,cutoff):
 
 kmerized_dir = {}
 
-directory = input("Please select the directory containing your .dna files ")
+directory = input("Please select the directory containing your .fasta files ")
 
 cutoffn = int(input("Please select the minimum kmer coverage for each of your sequences: "))
 
