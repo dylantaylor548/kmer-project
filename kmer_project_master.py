@@ -55,6 +55,7 @@ def kmerize_directory(directory,kmer_size):
     print("\nAll " + str(kmer_size)+ "-mers generated!\n")
     return kmerdict
 
+
 # Takes a dictionary whose values are lists of kmers and removes the kmers present
 # in all of the lists from each list
 # (This has been tested and works, but it may be commented out in the actual code
