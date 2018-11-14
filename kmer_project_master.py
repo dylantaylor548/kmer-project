@@ -4,6 +4,8 @@ import copy
 """from Bio import SeqIO"""
 from fractions import Fraction
 import time
+import argparse
+from itertools import groupby
 
 # Takes a single dna sequence and returns all kmers as a list,
 # with each kmer appearing only once (This has been tested and works)
@@ -19,23 +21,28 @@ def kmerize(dna,kmer_size):
         return kmers_filtered
 
 
+#Reads a fasta file
+def fasta_iter(fasta_name):
+    fh = open(fasta_name)
+    faiter = (x[1] for x in groupby(fh, lambda line: line[0] == ">"))
+    for header in faiter:
+        header = header.next()[1:].strip()
+        seq = "".join(s.strip() for s in faiter.next())
+        yield header, seq
+
 # For a directory containing files each of one DNA sequence, creates a dictionary
 # with keywords: file_name and values: list of all kmers in that file
 # (This has been tested and works)
 def kmerize_directory(file_path,kmer_size):
     kmerdict = {}
     print("Generating " + str(kmer_size)+ "-mers\n...")
-    with open(file_path) as opened_file:
-        for line in opened_file:
-            line = line.strip()
-            if not line:
-                continue
-            if line.startswith(">"):
-                sequence_name = line[1:]
-                continue
-            sequence = line
-            kmers_in_dna= kmerize(sequence,kmer_size)
-            kmerdict[sequence_name] = kmers_in_dna
+
+    fiter = fasta_iter(file_path)
+    for ff in fiter:
+        header = ff[0]
+        sequence = ff[1]
+        kmers_in_dna = kmerize(sequence,kmer_size)
+        kmerdict[header] = kmers_in_dna
     print("\nAll " + str(kmer_size)+ "-mers generated!\n")
     return kmerdict
 
@@ -149,37 +156,38 @@ def rep_kmers_indict(kmerdict,cutoff):
 
 
 
-############################################################################################################### vvv This is the part that does the code vvv
-
-kmerized_dir = {}
-
-directory = input("Please select the fasta file of choice: ")
-
-cutoffn = int(input("Please select the minimum kmer coverage for each of your sequences: "))
-
-while True:
-    kmer_len = int(input("Please select your desired kmer length: "))
-    print("\nLet's see if we can generate " + str(kmer_len) + "-mers for all of your sequences...\n")
-    kmerized_dir = kmerize_directory(directory,kmer_len)
-
-    if all(value == None for value in kmerized_dir.values()):
-        print("The kmer size you have chosen is either greater than the length of one of your sequences, or less than one.")
-        continue
-    else:
-        break
+################################################################ vvv This is the part that does the code vvv
 
 
-# This will be commented out if we can choose non-unique kmers
-"""kmerized_dir = rem_redun_kmer(kmerized_dir)
-print("Done removing non-unique kmers!")"""
+def main():
+    parser = argparse.ArgumentParser(description="Finds representative kmers for a set of sequences")
+    parser.add_argument("-f","--fasta_file", help="A fasta file of sequences",required=True)
+    parser.add_argument("-c","--cutoff_value", help="cutoff value - it is the number of times each sequence needs to be covered",required=True)
+    parser.add_argument("-k","--kmer_len", help="kmer length",required=True)
+    parser.add_argument("-o","--out_file", help="Output file with representative kmers",required=True)
+    args = parser.parse_args()
 
-rep_list = rep_kmers_indict(kmerized_dir,cutoffn)
+    kmerized_dir = {}
+    kmerized_dir = kmerize_directory(args.fasta_file,int(args.kmer_len))
+    print kmerized_dir
+    # This will be commented out if we can choose non-unique kmers
+    """kmerized_dir = rem_redun_kmer(kmerized_dir)
+    print("Done removing non-unique kmers!")"""
 
-if rep_list:
-    for element in rep_list:
-        print(element)
+    rep_list = rep_kmers_indict(kmerized_dir, int(args.cutoff_value))
+    fw = open(args.out_file, 'w')
+    if rep_list:
+        for element in rep_list:
+            fw.write(element+'\n')
+            # print(element)
 
-print("There are " + str(len(rep_list)) + " " + str(kmer_len) + "-mers in the representative list.")
 
-############################################################################################################### ^^^ This is the part that does the code ^^^
+    print("There are " + str(len(rep_list)) + " " + str(args.kmer_len) + "-mers in the representative list.")
+
+    #################################################################################### ^^^ This is the part that does the code ^^^
+
+
+
+if __name__ == '__main__':
+    main()
 
