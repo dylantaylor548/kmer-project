@@ -80,11 +80,14 @@ def rep_kmers_indict(kmerdict,cutoff):
     for kmer in rep_list_copy:
         if checkcoverage(kmer,kmerdict,seq_counts,cutoff):
             rep_kmer_list.remove(kmer)
+            for seq in kmerdict:
+                if kmer in kmerdict[seq]:
+                    seq_counts[seq] -= 1
                     
     return rep_kmer_list
 
 ##
-def partition_fasta(file_path,partition_n,destination_folder,k=21,c=1):
+def partition_fasta(file_path,partition_n,destination_folder,c=1,k=21):
     file = open(file_path)
     file_dict = {}
     
@@ -104,8 +107,12 @@ def partition_fasta(file_path,partition_n,destination_folder,k=21,c=1):
     partition_length = int(len(sequences)/partition_n)
 
     for x in range(0,partition_n):
-        partition_destination_path = destination_folder + '/partition_' + str(x+1) + '.fasta'
-        replist_path = destination_folder + '/partition_' + str(x+1) + '_replist.txt'
+        if x < 10:
+            partition_destination_path = destination_folder + '/partition_0' + str(x+1) + '.fasta'
+            replist_path = destination_folder + '/partition_0' + str(x+1) + '_replist.txt'
+        else:
+            partition_destination_path = destination_folder + '/partition_' + str(x+1) + '.fasta'
+            replist_path = destination_folder + '/partition_' + str(x+1) + '_replist.txt'
         f_partition = open(partition_destination_path,'w')
         f_replist = open(replist_path,'w')
         
@@ -132,8 +139,10 @@ def partition_fasta(file_path,partition_n,destination_folder,k=21,c=1):
 
 #######################################################################################3
 
-chosen_file = input('Choose a file to sample: ')
+chosen_file = input('Choose a file to partition: ')
 partition_num = int(input('Choose the number of partitions you would like to make: '))
 destination = input('Choose a directory to place the partitions in: ')
+c = int(input('Choose desired coverage: '))
 
-partition_fasta(chosen_file,partition_num,destination)
+
+partition_fasta(chosen_file,partition_num,destination,c)

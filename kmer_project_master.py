@@ -22,36 +22,20 @@ def kmerize(dna,kmer_size):
 # For a directory containing files each of one DNA sequence, creates a dictionary
 # with keywords: file_name and values: list of all kmers in that file
 # (This has been tested and works)
-"""def kmerize_directory(directory,kmer_size):
+def kmerize_directory(file_path,kmer_size):
     kmerdict = {}
     print("Generating " + str(kmer_size)+ "-mers\n...")
-    for file_name in os.listdir(directory):
-        if file_name.endswith('.fasta'):
-            file_path = (directory + '/' + file_name)
-            for seq_record in SeqIO.parse(file_path,'fasta'):
-                seq_name = str(seq_record.id).rstrip('\n')
-                sequence = str(seq_record.seq).rstrip('\n')
-                kmers_in_dna = kmerize(sequence,kmer_size)
-                kmerdict[seq_name] = kmers_in_dna
-    print("\nAll " + str(kmer_size)+ "-mers generated!\n")
-    return kmerdict"""
-def kmerize_directory(directory,kmer_size):
-    kmerdict = {}
-    print("Generating " + str(kmer_size)+ "-mers\n...")
-    for file_name in os.listdir(directory):
-        if file_name.endswith('.fasta'):
-            file_path = (directory + '/' + file_name)
-            with open(file_path) as opened_file:
-                for line in opened_file:
-                    line = line.strip()
-                    if not line:
-                        continue
-                    if line.startswith(">"):
-                        sequence_name = line[1:]
-                        continue
-                    sequence = line
-                    kmers_in_dna= kmerize(sequence,kmer_size)
-                    kmerdict[sequence_name] = kmers_in_dna
+    with open(file_path) as opened_file:
+        for line in opened_file:
+            line = line.strip()
+            if not line:
+                continue
+            if line.startswith(">"):
+                sequence_name = line[1:]
+                continue
+            sequence = line
+            kmers_in_dna= kmerize(sequence,kmer_size)
+            kmerdict[sequence_name] = kmers_in_dna
     print("\nAll " + str(kmer_size)+ "-mers generated!\n")
     return kmerdict
 
@@ -151,12 +135,15 @@ def rep_kmers_indict(kmerdict,cutoff):
 
             del seq_w_kmer[kmer_max]
                             
-    """print("\nChecking output for redundant kmers...\n")"""
+    print("\nChecking output for redundant kmers...\n")
     rep_list_copy = copy.deepcopy(rep_kmer_list)
     for kmer in rep_list_copy:
         if checkcoverage(kmer,kmerdict,seq_counts,cutoff):
             print(kmer + " is redundant.")
             rep_kmer_list.remove(kmer)
+            for seq in kmerdict:
+                if kmer in kmerdict[seq]:
+                    seq_counts[seq] -= 1
                     
     return rep_kmer_list
 
@@ -166,7 +153,7 @@ def rep_kmers_indict(kmerdict,cutoff):
 
 kmerized_dir = {}
 
-directory = input("Please select the directory containing your .fasta files ")
+directory = input("Please select the fasta file of choice: ")
 
 cutoffn = int(input("Please select the minimum kmer coverage for each of your sequences: "))
 
