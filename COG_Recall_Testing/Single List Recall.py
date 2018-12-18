@@ -22,9 +22,10 @@ def kmerfile_to_list(file_path):
             kmerlist.append(kmer)
     return kmerlist
 
+##############################################################################
+
 partition_file = "C:/Users/dylta/Desktop/COG0090.fna"
 replist_file = "C:/Users/dylta/Desktop/test_list.txt"
-#replist_file = "C:/Users/dylta/Desktop/Pop lab/kmer-project/COG_Recall_Testing/COG0088/COG0088-replists_c1/partition_01_replist.txt"
 
 partition_dict = fasta_to_dict(partition_file)
 partition_kmerlist = kmerfile_to_list(replist_file)

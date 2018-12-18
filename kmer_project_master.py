@@ -184,7 +184,7 @@ def main():
 
     print("There are " + str(len(rep_list)) + " " + str(args.kmer_len) + "-mers in the representative list.")
 
-    #################################################################################### ^^^ This is the part that does the code ^^^
+################################################################ ^^^ This is the part that does the code ^^^
 
 
 

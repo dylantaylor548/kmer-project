@@ -36,9 +36,6 @@ def directory_to_replistdict(directory):
 
 #############################################
 
-"""partition_directory = input("Choose the directory containing your partition fasta files: ")
-replist_directory = input("Choose the directory containing the representative kmer lists\nfor each of your partitions: ")
-output_location = input("Choose the location you would like to output the data to (it should be a .csv file): ")"""
 partition_directory = "C:/Users/dylta/Desktop/Pop lab/kmer-project/COG_Recall_Testing/COG0088/COG0088-partitions_c2"
 replist_directory = "C:/Users/dylta/Desktop/Pop lab/kmer-project/COG_Recall_Testing/COG0088/COG0088-replists_c2"
 output_location = "C:/Users/dylta/Desktop/COG0088_Recall.csv"
