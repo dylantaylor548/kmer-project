@@ -47,23 +47,27 @@ def main():
 
     numseq = len(fastadict)
     seq_covered = 0
+    tot_coverage = 0
     for sequence in fastadict.keys():
         coverage = 0
         for kmer in replist:
             if kmer in fastadict[sequence]:
                 coverage += 1
+                tot_coverage += 1
         if coverage != 0:
             seq_covered += 1
             summary.write(str(sequence) + "," + "True" + "," + str(coverage) + "\n")
         elif coverage == 0:
             summary.write(str(sequence) + "," + "False" + "," + str(coverage) + "\n")
 
+    avg_coverage = tot_coverage/seq_covered
     recall = (100*seq_covered)/numseq
     stats.write(str(numseq) + "," + str(seq_covered) + "," + str(recall)[:5] + "\n")
 
     stats.close()
     summary.close()
-    print("The recall was " + str(recall)[:5] + "%")
+    print("\nThe recall was " + str(recall)[:5] + "%")
+    print("Of the sequences that were covered, they were covered " + str(avg_coverage)[:3] + " times, on average.")
 
 #####################################################
 
