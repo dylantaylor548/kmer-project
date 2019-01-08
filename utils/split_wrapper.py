@@ -10,7 +10,7 @@ def main():
     parser.add_argument("-f","--fasta_file", help="A fasta file of sequences",required = True)
     parser.add_argument("-r","--train_test_ratio", help="Training to test ratio (between 0 to 1, default=0.8)",required = False, default = 0.8)
     parser.add_argument("-n ","--num_trials", help="Number of random trials (default = 10)",required = False, default = 10)
-    parser.add_argument("-o","--out_dir", help="Output directory", required = False, default = 'temp')
+    parser.add_argument("-o","--out_dir", help="Output directory", required = False, default = 'partitions')
     parser.add_argument("-pre","--prefix", help="Output file prefix", required = False, default ='trial')
     args = parser.parse_args()
     if not os.path.exists(args.out_dir):

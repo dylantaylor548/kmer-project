@@ -144,9 +144,9 @@ def rep_kmers_indict(kmerdict,cutoff):
 def main():
     parser = argparse.ArgumentParser(description="Finds representative kmers for a set of sequences")
     parser.add_argument("-f","--fasta_file", help="A fasta file of sequences",required=True)
-    parser.add_argument("-c","--cutoff_value", help="cutoff value - it is the number of times each sequence needs to be covered",required=False,default='1')
-    parser.add_argument("-k","--kmer_len", help="kmer length",required=False,default='21')
-    parser.add_argument("-o","--out_file", help="Output file with representative kmers",required=False,default='rep_list.csv')
+    parser.add_argument("-c","--cutoff_value", help="cutoff value - it is the number of times each sequence needs to be covered",required=True)
+    parser.add_argument("-k","--kmer_len", help="kmer length",required=True)
+    parser.add_argument("-o","--out_file", help="Output file with representative kmers",required=True)
     args = parser.parse_args()
 
     kmerized_dir = {}
