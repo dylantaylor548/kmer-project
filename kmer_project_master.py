@@ -1,7 +1,6 @@
 
 import os
 import copy
-"""from Bio import SeqIO"""
 from fractions import Fraction
 import time
 import argparse
@@ -30,6 +29,7 @@ def fasta_iter(fasta_name):
         seq = "".join(s.strip() for s in faiter.next())
         yield header, seq
 
+
 # For a directory containing files each of one DNA sequence, creates a dictionary
 # with keywords: file_name and values: list of all kmers in that file
 # (This has been tested and works)
@@ -45,24 +45,6 @@ def kmerize_directory(file_path,kmer_size):
         kmerdict[header] = kmers_in_dna
     print("\nAll " + str(kmer_size)+ "-mers generated!\n")
     return kmerdict
-
-
-# Takes a dictionary whose values are lists of kmers and removes the kmers present
-# in all of the lists from each list
-# (This has been tested and works, but it may be commented out in the actual code
-# if repeating kmers are allowed)
-def rem_redun_kmer(kmerdict):
-    all_kmers = []
-    filtered_dict = copy.deepcopy(kmerdict)
-    for kmer_list in filtered_dict.values():
-        for kmer in kmer_list:
-            all_kmers.append(kmer)
-    for kmer in all_kmers:
-        if all_kmers.count(kmer) == len(filtered_dict):
-            for key in filtered_dict:
-                if kmer in filtered_dict[key]:
-                    filtered_dict[key].remove(kmer)
-    return filtered_dict
 
 
 # Reverses a dictionary such that the elements of the value lists become keys
@@ -170,9 +152,6 @@ def main():
     kmerized_dir = {}
     kmerized_dir = kmerize_directory(args.fasta_file,int(args.kmer_len))
     print kmerized_dir
-    # This will be commented out if we can choose non-unique kmers
-    """kmerized_dir = rem_redun_kmer(kmerized_dir)
-    print("Done removing non-unique kmers!")"""
 
     rep_list = rep_kmers_indict(kmerized_dir, int(args.cutoff_value))
     fw = open(args.out_file, 'w')

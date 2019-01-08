@@ -116,13 +116,13 @@ def rep_kmers_indict(kmerdict,cutoff):
 # call kmerize file on a file with a for loop for kmer len
 #rep_kmers_indict call with cutoff 1
 # k len, c (1), worth, coverage
-k = 15;
-c = 1;
+k = 15
+c = 1
 f = open('kmerdata.csv','w')
 f.write('kmerlen'+','+'c'+','+'worth'+','+'coverage'+'\n')
 
 while(k <= 31):
-    dict = kmerize_file("TIGR02012_500.fasta", k)
+    dict = kmerize_file("C:/Users/Dylan/Desktop/Pop_Lab/kmer-project/TIGR02012_500.fasta", k)
     rep_dict,rev_dict = rep_kmers_indict(dict,c)
     for kmer in rep_dict:
         f.write(str(k)+','+str(c)+','+str(rep_dict[kmer])+','+str(len(rev_dict[kmer]))+'\n')
