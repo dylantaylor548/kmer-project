@@ -54,9 +54,11 @@ def rem_redundant(seq_kmers_dict):
         for kmer2 in dict_copy:
             if kmer =! kmer2:
                 if set(dict_copy[kmer]) < set(dict_copy[kmer2]):
-                    del seq_kmers_dict[kmer]
+                    if kmer in seq_kmers_dict:
+                        del seq_kmers_dict[kmer]
                 elif set(dict_copy[kmer2]) < set(dict_copy[kmer]):
-                    del seq_kmers_cict[kmer2]
+                    if kmer2 in seq_kmers_dict:
+                        del seq_kmers_cict[kmer2]
     return seq_kmers_dict
 
 
@@ -166,7 +168,6 @@ def main():
 
     kmerized_dir = {}
     kmerized_dir = kmerize_directory(args.fasta_file,int(args.kmer_len))
-    print(kmerized_dir)
 
     rep_list = rep_kmers_indict(kmerized_dir, int(args.cutoff_value))
     fw = open(args.out_file, 'w')
