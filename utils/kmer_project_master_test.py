@@ -58,7 +58,7 @@ def rem_redundant(seq_kmers_dict):
                         del seq_kmers_dict[kmer]
                 elif set(dict_copy[kmer2]) < set(dict_copy[kmer]):
                     if kmer2 in seq_kmers_dict:
-                        del seq_kmers_cict[kmer2]
+                        del seq_kmers_dict[kmer2]
     return seq_kmers_dict
 
 
