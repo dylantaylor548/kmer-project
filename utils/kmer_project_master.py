@@ -47,6 +47,28 @@ def kmerize_directory(file_path,kmer_size):
     return kmerdict
 
 
+# Removes kmers from a reverse dictionary who's sequences are a subset of another kmers
+# While this is functional, it does not appear to help runtime at all
+def rem_redundant(seq_kmers_dict,note=False):
+    dict_copy = copy.deepcopy(seq_kmers_dict)
+    i = 0
+    for kmer in dict_copy:
+        if note == True:
+            print(str(i) + "/" + str(len(dict_copy)) + "  " + str((100*i)/len(dict_copy)) + "% done")
+        for kmer2 in seq_kmers_dict:
+            redunlist =[]
+            if kmer != kmer2:
+                if set(dict_copy[kmer]) < set(dict_copy[kmer2]):
+                    redunlist.append(kmer)
+                elif set(dict_copy[kmer2]) < set(dict_copy[kmer]):
+                    redunlist.append(kmer2)
+        for kmers in redunlist:
+            if kmers in seq_kmers_dict:
+                del seq_kmers_dict[kmers]
+        i += 1
+    return seq_kmers_dict
+
+
 # Reverses a dictionary such that the elements of the value lists become keys
 # and the keys become value lists of the elements
 # (This has been tested and works)
@@ -151,7 +173,6 @@ def main():
 
     kmerized_dir = {}
     kmerized_dir = kmerize_directory(args.fasta_file,int(args.kmer_len))
-    print(kmerized_dir)
 
     rep_list = rep_kmers_indict(kmerized_dir, int(args.cutoff_value))
     fw = open(args.out_file, 'w')
