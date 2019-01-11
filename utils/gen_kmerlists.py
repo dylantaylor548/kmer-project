@@ -6,6 +6,7 @@ def get_script_path():
     return os.path.dirname(os.path.realpath(sys.argv[0]))
 
 def main():
+    parser = argparse.ArgumentParser(description="Generates kmer lists from a directory of training fasta partitions")
     parser.add_argument("-pd","--partition_directory",help="A directory containing test and trial partitions of a fasta file",required=True)
     parser.add_argument("-o","--out_list_dir",help="Output directory for the generated training lists",required=False,default="training_lists")
     parser.add_argument("-stp","--stats_pre",help="Output statistics file prefix",required=False,default='stats')
