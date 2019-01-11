@@ -51,7 +51,7 @@ def kmerize_directory(file_path,kmer_size):
 def rem_redundant(seq_kmers_dict):
     dict_copy = copy.deepcopy(seq_kmers_dict)
     for kmer in dict_copy:
-        for kmer2 in dict_copy:
+        for kmer2 in seq_kmers_dict:
             if kmer != kmer2:
                 if set(dict_copy[kmer]) < set(dict_copy[kmer2]):
                     if kmer in seq_kmers_dict:
