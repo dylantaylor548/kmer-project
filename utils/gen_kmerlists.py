@@ -16,12 +16,13 @@ def main():
         os.makedirs(args.out_list_dir)
 
     script_path = get_script_path()
-    part_dir = script_path + "/" + str(args.partition_directory)
+    part_dir = script_path + "\\" + str(args.partition_directory)
     
     for file_name in os.listdir(part_dir):
         if file_name.endswith('train.fasta'):
             file_path = part_dir + "/" + file_name
-            cmd = "kmer_project_master.py -f '" + str(file_path) + "' -o '" + str(args.out_list_dir) + "/" + file_name[:-11] + ".csv" 
+            print(args.out_list_dir)
+            cmd = "kmer_project_master.py -f '" + str(file_path) + "' -o '" + args.out_list_dir + "/" + file_name[:-11] + ".csv" 
             os.system(cmd)
 
 if __name__ == '__main__':
