@@ -51,10 +51,9 @@ def kmerize_directory(file_path,kmer_size):
 def rem_redundant(seq_kmers_dict,note=False):
     dict_copy = copy.deepcopy(seq_kmers_dict)
     i = 0
-    tenth = (round(len(dict_copy),-1))/10
     for kmer in dict_copy:
-        if (i%tenth == 0) and (note == True):
-            print(str(i/tenth) + "% done")
+        if note == True:
+            print(str(i) + "/" + str(len(dict_copy)) + "  " + str((100*i)/len(dict_copy)) + "% done")
         for kmer2 in seq_kmers_dict:
             redunlist =[]
             if kmer != kmer2:
@@ -124,10 +123,10 @@ def findkmax(rev_dict,seq_w_kmer):
 # (This has been tested and works)
 def rep_kmers_indict(kmerdict,cutoff):
     rev_dict = reverse_dict(kmerdict)
-    if cutoff == 1:
+    """if cutoff == 1:
 	print("Removing subsets...")
-        rev_dict = rem_redundant(rev_dict)
-	print("Done!")
+        rev_dict = rem_redundant(rev_dict,True)
+	print("Done!")"""
     seq_counts = generate_seq_counts(kmerdict)
     rep_kmer_list = []
     seq_w_kmer = {}
