@@ -48,9 +48,13 @@ def kmerize_directory(file_path,kmer_size):
 
 
 # Removes kmers from a reverse dictionary who's sequences are a subset of another kmers
-def rem_redundant(seq_kmers_dict):
+def rem_redundant(seq_kmers_dict,note=False):
     dict_copy = copy.deepcopy(seq_kmers_dict)
+    i = 0
+    tenth = (round(len(dict_copy),-1))/10
     for kmer in dict_copy:
+        if (i%tenth == 0) and (note == True):
+            print(str(i/tenth) + "% done")
         for kmer2 in seq_kmers_dict:
             redunlist =[]
             if kmer != kmer2:
@@ -58,9 +62,10 @@ def rem_redundant(seq_kmers_dict):
                     redunlist.append(kmer)
                 elif set(dict_copy[kmer2]) < set(dict_copy[kmer]):
                     redunlist.append(kmer2)
-            for kmers in redunlist:
-                if kmers in seq_kmers_dict:
-                    del seq_kmers_dict[kmers]
+        for kmers in redunlist:
+            if kmers in seq_kmers_dict:
+                del seq_kmers_dict[kmers]
+        i += 1
     return seq_kmers_dict
 
 
