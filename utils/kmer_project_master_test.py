@@ -118,7 +118,9 @@ def findkmax(rev_dict,seq_w_kmer):
 def rep_kmers_indict(kmerdict,cutoff):
     rev_dict = reverse_dict(kmerdict)
     if cutoff == 1:
+	print("Removing subsets...")
         rev_dict = rem_redundant(rev_dict)
+	print("Done!")
     seq_counts = generate_seq_counts(kmerdict)
     rep_kmer_list = []
     seq_w_kmer = {}
