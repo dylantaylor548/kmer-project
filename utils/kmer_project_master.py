@@ -42,7 +42,8 @@ def kmerize_directory(file_path,kmer_size):
         header = ff[0]
         sequence = ff[1]
         kmers_in_dna = kmerize(sequence,kmer_size)
-        kmerdict[header] = kmers_in_dna
+        kmerdict[header] = dict((x, 1) for x in kmers_in_dna)
+        # kmerdict[header] = kmers_in_dna
     print("\nAll " + str(kmer_size)+ "-mers generated!\n")
     return kmerdict
 
@@ -74,9 +75,16 @@ def rem_redundant(seq_kmers_dict,note=False):
 # (This has been tested and works)
 def reverse_dict(kmerdict):
     rev_dict = {}
-    for seq, kmer_list in kmerdict.items():
-        for kmer in kmer_list:
-            rev_dict.setdefault(kmer,[]).append(seq)
+    for seqs in kmerdict:
+    	for kmers in kmerdict[seqs]:
+    		if kmers in rev_dict:
+    			rev_dict[kmers][seqs] = 1
+    		else:
+    			rev_dict[kmers] = {}
+    			rev_dict[kmers][seqs] = 1
+    # for seq, kmer_list in kmerdict.items():
+    #     for kmer in kmer_list:
+    #         rev_dict.setdefault(kmer,[]).append(seq)
     return rev_dict
 
 
@@ -136,7 +144,8 @@ def rep_kmers_indict(kmerdict,cutoff):
         else:
             kmer_max = findkmax(rev_dict,seq_w_kmer)
             rep_kmer_list.append(kmer_max)
-            print("Highest coverage kmer is: " + kmer_max + ", with worth: " + str(seq_w_kmer[kmer_max]) + " and coverage: " + str(len(rev_dict[kmer_max])))
+            # print (time.strftime("%c")+': Starting phase 1: Outlier detection step..', file = sys.stderr)
+            print(time.strftime("%c") + ": Highest coverage kmer is: " + kmer_max + ", with worth: " + str(seq_w_kmer[kmer_max]) + " and coverage: " + str(len(rev_dict[kmer_max])))
             for seq in seq_counts:
                 if seq in rev_dict[kmer_max]:
                     for kmer in seq_w_kmer:
