@@ -147,6 +147,7 @@ def rep_kmers_indict(kmerdict,cutoff):
             rep_kmer_list.append(kmer_max)
             # print (time.strftime("%c")+': Starting phase 1: Outlier detection step..', file = sys.stderr)
             print(time.strftime("%c") + ": Highest coverage kmer is: " + kmer_max + ", with worth: " + str(seq_w_kmer[kmer_max]) + " and coverage: " + str(len(rev_dict[kmer_max])))
+            print('resetting... ',end='')
             for seq in seq_counts:
                 if seq in rev_dict[kmer_max]:
                     for kmer in seq_w_kmer:
@@ -157,7 +158,8 @@ def rep_kmers_indict(kmerdict,cutoff):
                         cov_counter -= 1
 
             del seq_w_kmer[kmer_max]
-                            
+            print('done')
+
     print("\nChecking output for redundant kmers...\n")
     rep_list_copy = copy.deepcopy(rep_kmer_list)
     for kmer in rep_list_copy:
