@@ -137,7 +137,8 @@ def rep_kmers_indict(kmerdict,cutoff):
     seq_w_kmer = {}
     for kmer in rev_dict:
         seq_w_kmer.setdefault(kmer,len(rev_dict[kmer]))
-    while not all(count >= cutoff for count in seq_counts.values()):
+    cov_counter = len(seq_counts)
+    while cov_counter > 0:
         if rev_dict == {}:
             print("Your value of c is too high, not enough unique kmers were found.")
             return
@@ -152,6 +153,8 @@ def rep_kmers_indict(kmerdict,cutoff):
                         if (seq in rev_dict[kmer]) and (seq_counts[seq] < cutoff):
                             seq_w_kmer[kmer] = seq_w_kmer[kmer] - Fraction(1,cutoff)
                     seq_counts[seq] += 1
+                    if seq_counts[seq] == cutoff:
+                        cov_counter -= 1
 
             del seq_w_kmer[kmer_max]
                             
