@@ -114,17 +114,21 @@ def checkcoverage(kmer,seq_kmers_dict,coverage_dict,cutoff):
 # (This has been tested and works)
 def findkmax(rev_dict,seq_w_kmer):
     kmax = ''
+    worthcopy = copy.deepcopy(seq_w_kmer)
     for kmer in seq_w_kmer:
-        if kmax == '':
-            kmax = kmer
-        elif seq_w_kmer[kmer] > seq_w_kmer[kmax]:
-            kmax = kmer
-        elif seq_w_kmer[kmer] == seq_w_kmer[kmax]:
-            if len(rev_dict[kmer]) > len(rev_dict[kmax]):
-                kmax = kmer
-            elif len(rev_dict[kmer]) == len(rev_dict[kmax]):
-                kmax = min(kmer,kmax)
-    return kmax
+    	if seq_w_kmer[kmer] == 0:
+    		del worthcopy[kmer]
+    	else:
+	        if kmax == '':
+	            kmax = kmer
+	        elif seq_w_kmer[kmer] > seq_w_kmer[kmax]:
+	            kmax = kmer
+	        elif seq_w_kmer[kmer] == seq_w_kmer[kmax]:
+	            if len(rev_dict[kmer]) > len(rev_dict[kmax]):
+	                kmax = kmer
+	            elif len(rev_dict[kmer]) == len(rev_dict[kmax]):
+	                kmax = min(kmer,kmax)
+    return kmax, worthcopy
 
 
 # Given a kmer dictionary and a cutoff, returns a list of kmers such that each
@@ -143,22 +147,17 @@ def rep_kmers_indict(kmerdict,cutoff):
             print("Your value of c is too high, not enough unique kmers were found.")
             return
         else:
-            kmer_max = findkmax(rev_dict,seq_w_kmer)
+            kmer_max,seq_w_kmer = findkmax(rev_dict,seq_w_kmer)
             rep_kmer_list.append(kmer_max)
-            # print (time.strftime("%c")+': Starting phase 1: Outlier detection step..', file = sys.stderr)
             print(time.strftime("%c") + ": Highest coverage kmer is: " + kmer_max + ", with worth: " + str(seq_w_kmer[kmer_max]) + " and coverage: " + str(len(rev_dict[kmer_max])))
-            print('resetting... ',end='')
-            for seq in seq_counts:
-                if seq in rev_dict[kmer_max]:
-                    for kmer in seq_w_kmer:
-                        if (seq in rev_dict[kmer]) and (seq_counts[seq] < cutoff):
-                            seq_w_kmer[kmer] = seq_w_kmer[kmer] - Fraction(1,cutoff)
-                    seq_counts[seq] += 1
-                    if seq_counts[seq] == cutoff:
-                        cov_counter -= 1
-
+            for seq in rev_dict[kmer_max]:
+                for kmer in kmerdict[seq]:
+                    if seq_counts[seq] < cutoff:
+                        seq_w_kmer[kmer] -= Fraction(1,cutoff)
+                seq_counts[seq] += 1
+                if seq_counts[seq] == cutoff:
+                    cov_counter -= 1
             del seq_w_kmer[kmer_max]
-            print('done')
 
     print("\nChecking output for redundant kmers...\n")
     rep_list_copy = copy.deepcopy(rep_kmer_list)
@@ -185,6 +184,8 @@ def main():
     parser.add_argument("-k","--kmer_len", help="kmer length",required=False,default='21')
     args = parser.parse_args()
 
+    start_time = time.time()
+
     kmerized_dir = {}
     kmerized_dir = kmerize_directory(args.fasta_file,int(args.kmer_len))
 
@@ -197,6 +198,12 @@ def main():
 
 
     print("There are " + str(len(rep_list)) + " " + str(args.kmer_len) + "-mers in the representative list.")
+    
+    end_time = time.time()
+    runtime = end_time - start_time
+    seconds = int(runtime % 60)
+    minutes = int(runtime/60)
+    print("It took " + str(minutes) + " minutes and " + str(seconds) + " seconds to generate a list from " + str(len(kmerized_dir)) + " sequences.")
 
 ################################################################ ^^^ This is the part that does the code ^^^
 
