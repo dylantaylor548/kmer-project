@@ -150,6 +150,15 @@ def rep_kmers_indict(kmerdict,cutoff):
             kmer_max,seq_w_kmer = findkmax(rev_dict,seq_w_kmer)
             rep_kmer_list.append(kmer_max)
             print(time.strftime("%c") + ": Highest coverage kmer is: " + kmer_max + ", with worth: " + str(seq_w_kmer[kmer_max]) + " and coverage: " + str(len(rev_dict[kmer_max])))
+            for seq in seq_counts:
+                if seq in rev_dict[kmer_max]:
+                    for kmer in seq_w_kmer:
+                        if (seq in rev_dict[kmer]) and (seq_counts[seq] < cutoff):
+                            seq_w_kmer[kmer] = seq_w_kmer[kmer] - Fraction(1,cutoff)
+                    seq_counts[seq] += 1
+                    if seq_counts[seq] == cutoff:
+                        cov_counter -= 1
+
             for seq in rev_dict[kmer_max]:
                 for kmer in kmerdict[seq]:
                     if seq_counts[seq] < cutoff:
