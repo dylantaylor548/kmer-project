@@ -55,7 +55,7 @@ def rem_redundant(seq_kmers_dict,note=False):
     i = 0
     for kmer in dict_copy:
         if note == True:
-            print(str(i) + "/" + str(len(dict_copy)) + "  " + str((100*i)/len(dict_copy)) + "% done")
+            print(str(i) + "/" + str(len(dict_copy)) + "  " + str((100*i)/len(dict_copy)) + "%"+" done")
         for kmer2 in seq_kmers_dict:
             redunlist =[]
             if kmer != kmer2:

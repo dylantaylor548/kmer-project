@@ -8,7 +8,7 @@
 #load modules you want
 module load samtools
 
-file=`head -n ${SLURM_ARRAY_TASK_ID} all_files_list.txt | tail -n 1`
+file=`head -n 1 ${SLURM_ARRAY_TASK_ID} list_files.txt | tail -n 1`
 #file=`head -n 1 ${1} | tail -n 1`
 rep_basename=`basename ${file}`
 filename="${rep_basename%.*}"

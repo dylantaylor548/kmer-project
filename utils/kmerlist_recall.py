@@ -1,18 +1,24 @@
 import argparse
 from itertools import groupby
+from fractions import Fraction
 
-def fasta2dict(fasta_path):
+def fasta_iter(fasta_name):
+    fh = open(fasta_name)
+    faiter = (x[1] for x in groupby(fh, lambda line: line[0] == ">"))
+    for header in faiter:
+        header = header.next()[1:].strip()
+        seq = "".join(s.strip() for s in faiter.next())
+        yield header, seq
+
+
+def fasta2dict(file_path):
     seqdict = {}
-    with open(fasta_path) as opened_file:
-        for line in opened_file:
-            line = line.strip()
-            if not line:
-                continue
-            if line.startswith(">"):
-                sequence_name = line[1:]
-                continue
-            sequence = line
-            seqdict[sequence_name] = sequence
+
+    fiter = fasta_iter(file_path)
+    for ff in fiter:
+        header = ff[0]
+        sequence = ff[1]
+        seqdict[header] = sequence
     return seqdict
 
 
@@ -48,7 +54,7 @@ def main():
     numseq = len(fastadict)
     seq_covered = 0
     tot_coverage = 0
-    for sequence in fastadict.keys():
+    for sequence in fastadict:
         coverage = 0
         for kmer in replist:
             if kmer in fastadict[sequence]:
@@ -59,15 +65,16 @@ def main():
             summary.write(str(sequence) + "," + "True" + "," + str(coverage) + "\n")
         elif coverage == 0:
             summary.write(str(sequence) + "," + "False" + "," + str(coverage) + "\n")
-
-    avg_coverage = tot_coverage/seq_covered
+    
+    print("There were " + str(seq_covered) + " sequences covered, a total of " + str(tot_coverage) + " times")
+    avg_coverage = float(Fraction(tot_coverage,seq_covered))
     recall = (100*seq_covered)/numseq
     stats.write(str(numseq) + "," + str(seq_covered) + "," + str(recall)[:5] + "\n")
 
     stats.close()
     summary.close()
     print("\nThe recall was " + str(recall)[:5] + "%")
-    print("Of the sequences that were covered, they were covered " + str(avg_coverage)[:3] + " times, on average.")
+    print("Of the sequences that were covered, they were covered " + str(avg_coverage) + " times, on average.")
 
 #####################################################
 
