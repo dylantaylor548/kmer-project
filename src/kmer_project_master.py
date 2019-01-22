@@ -55,7 +55,7 @@ def rem_redundant(seq_kmers_dict,note=False):
     i = 0
     for kmer in dict_copy:
         if note == True:
-            print(str(i) + "/" + str(len(dict_copy)) + "  " + str((100*i)/len(dict_copy)) + "%"+" done")
+            print(str(i) + "/" + str(len(dict_copy)) + "  " + str((100*i)/len(dict_copy)) + "% done")
         for kmer2 in seq_kmers_dict:
             redunlist =[]
             if kmer != kmer2:
@@ -76,12 +76,12 @@ def rem_redundant(seq_kmers_dict,note=False):
 def reverse_dict(kmerdict):
     rev_dict = {}
     for seqs in kmerdict:
-    	for kmers in kmerdict[seqs]:
-    		if kmers in rev_dict:
-    			rev_dict[kmers][seqs] = 1
-    		else:
-    			rev_dict[kmers] = {}
-    			rev_dict[kmers][seqs] = 1
+        for kmers in kmerdict[seqs]:
+            if kmers in rev_dict:
+                rev_dict[kmers][seqs] = 1
+            else:
+                rev_dict[kmers] = {}
+                rev_dict[kmers][seqs] = 1
     # for seq, kmer_list in kmerdict.items():
     #     for kmer in kmer_list:
     #         rev_dict.setdefault(kmer,[]).append(seq)
@@ -116,18 +116,18 @@ def findkmax(rev_dict,seq_w_kmer):
     kmax = ''
     worthcopy = copy.deepcopy(seq_w_kmer)
     for kmer in seq_w_kmer:
-    	if seq_w_kmer[kmer] == 0:
-    		del worthcopy[kmer]
-    	else:
-	        if kmax == '':
-	            kmax = kmer
-	        elif seq_w_kmer[kmer] > seq_w_kmer[kmax]:
-	            kmax = kmer
-	        elif seq_w_kmer[kmer] == seq_w_kmer[kmax]:
-	            if len(rev_dict[kmer]) > len(rev_dict[kmax]):
-	                kmax = kmer
-	            elif len(rev_dict[kmer]) == len(rev_dict[kmax]):
-	                kmax = min(kmer,kmax)
+        if seq_w_kmer[kmer] == 0:
+            del worthcopy[kmer]
+        else:
+            if kmax == '':
+                kmax = kmer
+            elif seq_w_kmer[kmer] > seq_w_kmer[kmax]:
+                kmax = kmer
+            elif seq_w_kmer[kmer] == seq_w_kmer[kmax]:
+                if len(rev_dict[kmer]) > len(rev_dict[kmax]):
+                    kmax = kmer
+                elif len(rev_dict[kmer]) == len(rev_dict[kmax]):
+                    kmax = min(kmer,kmax)
     return kmax, worthcopy
 
 
@@ -150,15 +150,6 @@ def rep_kmers_indict(kmerdict,cutoff):
             kmer_max,seq_w_kmer = findkmax(rev_dict,seq_w_kmer)
             rep_kmer_list.append(kmer_max)
             print(time.strftime("%c") + ": Highest coverage kmer is: " + kmer_max + ", with worth: " + str(seq_w_kmer[kmer_max]) + " and coverage: " + str(len(rev_dict[kmer_max])))
-            for seq in seq_counts:
-                if seq in rev_dict[kmer_max]:
-                    for kmer in seq_w_kmer:
-                        if (seq in rev_dict[kmer]) and (seq_counts[seq] < cutoff):
-                            seq_w_kmer[kmer] = seq_w_kmer[kmer] - Fraction(1,cutoff)
-                    seq_counts[seq] += 1
-                    if seq_counts[seq] == cutoff:
-                        cov_counter -= 1
-
             for seq in rev_dict[kmer_max]:
                 for kmer in kmerdict[seq]:
                     if seq_counts[seq] < cutoff:
@@ -220,4 +211,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
