@@ -1,4 +1,3 @@
-import argparse
 import numpy as np
 import matplotlib.pyplot as plt
 import os
@@ -38,42 +37,34 @@ def graphrecall(recalldict,title,out_dir):
 
 ################################################################
 
+partition_dir = 'C:/Users/Dylan/Desktop/Pop_Lab/kmer_project/data/recall_partitions'
+out_dir = 'C:/Users/Dylan/Desktop'
+graph_name = '8000/2000 Training/Test Sequences'
 
-def main():
-    parser = argparse.ArgumentParser(description="Finds representative kmers for a set of sequences")
-    parser.add_argument("-pd","--partition_dir", help="A directory containing the recall statistics for different k-lengths",required=True)
-    parser.add_argument("-o","--out_dir",help="The directory that the figures will be outputted to",required=True)
-    parser.add_argument("-n","--graph_name",help="The desired title of your figures",required=False,default='8000/2000 Training/Test Sequences')
-    args = parser.parse_args()
 
-    recalldict = {}
-    covdict = {}
+recalldict = {}
+covdict = {}
 
-    for folder in os.listdir(args.partition_dir):
-    	if folder.startswith('recall_stats_k'):
-    		klen = folder[14:]
-    		recalldict[klen] = []
-    		folderpath = args.partition_dir + '/' + folder
-    		for file in os.listdir(folderpath):
-    			if file.endswith('stats.csv'):
-    				filepath = folderpath + '/' + file
-    				with open(filepath) as opened_file:
-    					for line in opened_file:
-    						if line.startswith('T'):
-    							continue
-    						else:
-    							linelist = line.split(',')
-    							tot_seq = linelist[0]
-    							cov_seq = linelist[1]
-    							recall = 100*Fraction(cov_seq,tot_seq)
-    							recalldict[klen].append(recall)
+for folder in os.listdir(args.partition_dir):
+	if folder.startswith('recall_stats_k'):
+		klen = folder[14:]
+		recalldict[klen] = []
+		folderpath = args.partition_dir + '/' + folder
+		for file in os.listdir(folderpath):
+			if file.endswith('stats.csv'):
+				filepath = folderpath + '/' + file
+				with open(filepath) as opened_file:
+					for line in opened_file:
+						if line.startswith('T'):
+							continue
+						else:
+							linelist = line.split(',')
+							tot_seq = linelist[0]
+							cov_seq = linelist[1]
+							recall = 100*Fraction(cov_seq,tot_seq)
+							recalldict[klen].append(recall)
 
-    graphrecall(recalldict,args.graph_name,args.out_dir)
+graphrecall(recalldict,args.graph_name,args.out_dir)
 
     
 ################################################################
-
-
-
-if __name__ == '__main__':
-    main()
