@@ -21,7 +21,7 @@ def main():
     for file_name in os.listdir(part_dir):
         if file_name.endswith('train.fasta'):
             file_path = part_dir + "/" + file_name
-            cmd = "python kmer_project_master.py -f " + str(file_path) + " -o " + args.out_list_dir + "/" + file_name[:-11] + "replist.csv -c " + args.cutoff_value + " -k " + args.kmer_len
+            cmd = "python ../src/kmer_project_master.py -f " + str(file_path) + " -o " + args.out_list_dir + "/" + file_name[:-11] + "replist.csv -c " + args.cutoff_value + " -k " + args.kmer_len
             os.system(cmd)
 
 if __name__ == '__main__':
