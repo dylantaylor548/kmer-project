@@ -3,6 +3,40 @@ import matplotlib.pyplot as plt
 import os
 from fractions import Fraction
 
+
+def graphlistlen(lendict,title,out_dir):
+	fig1, ax1 = plt.subplots(nrows=1,ncols=1)
+
+	klens = list(lendict.keys())
+	test = klens[0]
+	klensint = [int(x) for x in klens]
+	
+	for i in range(0,len(lendict[test])):
+		lens = []
+		for klen in klens:
+			lens.append(lendict[klen][i])
+		ax1.plot(klensint,lens,"o",color='lightgray')
+
+	avglens = []
+	for klen in klens:
+		tot_lens = 0
+		count = 0
+		for length in lendict[klen]:
+			tot_lens += length
+			count += 1
+		avglength = tot_lens/count
+		avglens.append(avglength)
+
+	ax1.plot(klensint,avglens,"o",color='magenta')
+
+	ax1.set_title(title)
+	ax1.set_xlabel("kmer length")
+	ax1.set_ylabel("Length of representative list")
+	plt.tight_layout()
+	plt.savefig(out_dir + "/k_based_listlen.png")
+	plt.show()
+
+
 def graphrecall(recalldict,title,out_dir):
 	fig1, ax1 = plt.subplots(nrows=1,ncols=1)
 
@@ -78,12 +112,15 @@ graph_name = '8000/2000 Training/Test Sequences'
 
 recalldict = {}
 covdict = {}
+lendict = {}
 
 for folder in os.listdir(partition_dir):
 	if folder.startswith('recall_stats_k'):
 		klen = folder[14:]
 		recalldict[klen] = []
 		covdict[klen] = []
+		lendict[klen] = []
+
 		folderpath = partition_dir + '/' + folder
 		for file in os.listdir(folderpath):
 			if file.endswith('stats.csv'):
@@ -112,11 +149,18 @@ for folder in os.listdir(partition_dir):
 							counts += 1
 					avgcov = Fraction(tot_coverage,counts)
 					covdict[klen].append(avgcov)
-
+			if file.endswith('replist.csv'):
+				filepath = folderpath + '/' + file
+				with open(filepath) as opened_file:
+					lines = 0
+					for line in opened_file:
+						lines += 1
+					lendict[klen].append(lines)
 
 
 graphrecall(recalldict,graph_name,out_dir)
 graphcov(covdict,graph_name,out_dir)
+graphlistlen(lendict,graph_name,out_dir)
 
     
 ################################################################
