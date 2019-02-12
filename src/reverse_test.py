@@ -65,17 +65,18 @@ def gen_leastcovdict(kmerdict,seqcovdict):
 def checkcomplete(kmercovdict,coverage):
     check = True
     for kmer in kmercovdict:
-        if kmercovdict[kmer] > coverage:
+        if kmercovdict[kmer][0] > coverage:
             check = False
             break
     return check
 
-def findkmin(kmercovdict,kmerdict):
+def findkmin(kmercovdict,kmerdict,coverage):
     kmin = None
     for kmer in kmercovdict:
         if kmin == None:
             kmin = kmer
-        elif kmercovdict[kmer][0] < kmercovdict[kmin][0]:
+        #This is the bit that's a test
+        elif (kmercovdict[kmer][0] < kmercovdict[kmin][0]) and (kmercovdict[kmer][0] > coverage):
             kmin = kmer
         elif kmercovdict[kmer][0] == kmercovdict[kmin][0]:
             if kmercovdict[kmer][1] > kmercovdict[kmin][1]:
@@ -100,11 +101,11 @@ def reduce_kmerlist(seqdict,coverage):
 
     remcount = 0
     while not checkcomplete(kmercovdict,coverage):
-    	if remcount != 0:
-	        if (remcount%10) == 0:
-	    	    print("We've removed " + str(remcount) + " kmers")
+        if remcount != 0:
+            if (remcount%10) == 0:
+                print("We've removed " + str(remcount) + " kmers")
 
-        kmin = findkmin(kmercovdict,kmerdict)
+        kmin = findkmin(kmercovdict,kmerdict,coverage)
         for seq in kmerdict[kmin]:
             seqcovdict[seq] -= 1
         del kmerdict[kmin]
@@ -130,6 +131,13 @@ def main():
     reduceddict = reduce_kmerlist(seqdict,int(args.cutoff_value))
 
     print("There are " + str(len(reduceddict)) + " " + str(args.kmer_len) + "-mers in the representative list.")
+
+    fw = open(args.out_file, 'w')
+    if reduceddict:
+        for element in reduceddict.keys():
+            fw.write(element+'\n')
+            print(element)
+    fw.close()
     
     end_time = time.time()
     runtime = end_time - start_time
