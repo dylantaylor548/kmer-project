@@ -36,6 +36,23 @@ def store_kmerlist(oligo_csv_path):
     return oligo_list
 
 
+def get_complement(DNA_seq):
+    DNA = DNA_seq.split()
+    for i in range(0,len(DNA)):
+        base = DNA[i]
+        if base == 'A':
+            DNA[i] = 't'
+        if base == 'C':
+            DNA[i] = 'g'
+        if base == 'G':
+            DNA[i] = 'c'
+        if base == 'T':
+            DNA[i] = 'a'
+    DNA_comp = ''.join(DNA)
+    DNA_comp = DNA_comp.upper()
+    return DNA_comp
+
+
 ##################################################################################
 
 def main():
@@ -47,6 +64,7 @@ def main():
     args = parser.parse_args()
 
     oligo_list = store_kmerlist(args.oligo_list)
+
     interest_dict, noise_dict = store_seqs_w_id(args.sample_fasta,args.identifier)
 
     true_pos = 0
@@ -57,7 +75,8 @@ def main():
     for seq_name in interest_dict:
         covered = False
         for oligo in oligo_list:
-            if oligo in interest_dict[seq_name]:
+            complement = get_complement(oligo)
+            if (oligo in interest_dict[seq_name]) or (complement in interest_dict[seq_name]):
                 covered = True
                 true_pos += 1
                 break
@@ -65,14 +84,15 @@ def main():
             false_neg += 1
 
     for seq_name in noise_dict:
-    	covered = False
-    	for oligo in oligo_list:
-    		if oligo in noise_dict[seq_name]:
-    			covered = True
-    			false_pos += 1
-    			break
-    	if not covered:
-    		true_neg += 1
+        covered = False
+        for oligo in oligo_list:
+            complement = get_complement(oligo)
+            if (oligo in noise_dict[seq_name]) or (complement in noise_dict[seq_name]):
+                covered = True
+                false_pos += 1
+                break
+        if not covered:
+            true_neg += 1
 
     recall = float(Fraction(true_pos,(true_pos + false_neg))*100)
     precision = float(Fraction(true_pos,(true_pos + false_pos))*100)
