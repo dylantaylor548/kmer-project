@@ -94,7 +94,11 @@ def main():
         if not covered:
             true_neg += 1
 
-    recall = float(Fraction(true_pos,(true_pos + false_neg))*100)
+    recall = None
+    if true_pos != 0:
+    	recall = float(Fraction(true_pos,(true_pos + false_neg))*100)
+    else:
+    	recall = 0
     precision = float(Fraction(true_pos,(true_pos + false_pos))*100)
 
     print("Recall: " + str(recall) + "%")
