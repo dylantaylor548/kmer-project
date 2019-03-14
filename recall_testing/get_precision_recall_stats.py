@@ -61,15 +61,16 @@ def main():
 	parser.add_argument("-f","--sample_fasta",help='A .fasta file containing the sequences in your metagenomic "sample"',required=True)
 	parser.add_argument("-id","--identifier",help='The identifier for the correct sequence within the fasta file (i.e. "COG0088")',required=True)
 	parser.add_argument("-l","--oligo_list",help='A .csv file containing the representative list from your training data set\n(i.e. only the sequences you are interested in capturing)',required=True)
-	parser.add_argument("-o","--output_file",help='An output .csv file to store data about the recall and precision statistics',required=False,default=None)
+	parser.add_argument("-fpo","--false_pos_outfile",help='An output .csv file to store data about the precision statistics',required=False,default=None)
+	parser.add_argument("-fno","--false_neg_outfile",help='An output .fasta file to store false negative sequences',required=False,default=None)
 	args = parser.parse_args()
 
 	oligo_list = store_kmerlist(args.oligo_list)
 
 	interest_dict, noise_dict = store_seqs_w_id(args.sample_fasta,args.identifier)
 
-	if args.output_file != None:
-		f = open(args.output_file,'w')
+	if args.false_pos_outfile != None:
+		f = open(args.false_pos_outfile,'w')
 		line1 = "false_pos_seq_name,COG_name,kmers_hit\n"
 		f.write(line1)
 
@@ -77,6 +78,7 @@ def main():
 	true_neg = 0
 	false_pos = 0
 	false_neg = 0
+	false_neg_seqs = []
 
 	for seq_name in interest_dict:
 		covered = False
@@ -87,6 +89,7 @@ def main():
 				true_pos += 1
 				break
 		if not covered:
+			false_neg_seqs.append(seq_name)
 			false_neg += 1
 
 	false_pos_dict = {}
@@ -95,7 +98,7 @@ def main():
 		covered = False
 		for oligo in oligo_list:
 			complement = find_rev_complement(oligo)
-			if args.output_file == None:
+			if args.false_pos_outfile == None:
 				if (oligo in noise_dict[seq_name]) or (complement in noise_dict[seq_name]):
 					covered = True
 					false_pos += 1
@@ -124,13 +127,20 @@ def main():
 	print("Precision: " + str(precision) + "%")
 	print("Of the " + str(len(noise_dict)) + " sequences that were not " + args.identifier + ", we identified " + str(true_neg) + " as true negatives")
 
-	if args.output_file != None:
+	if args.false_pos_outfile != None:
 		for seq_name in false_pos_dict:
 			COG_name = seq_name[-7:]
 			kmers = ','.join(false_pos_dict[seq_name])
 			line = seq_name + ',' + COG_name + ',' + kmers + '\n'
 			f.write(line)
-		f.close() 
+		f.close()
+
+	if args.false_neg_outfile != None:
+		fnf = open(args.false_neg_outfile,'w')
+		for seq_name in false_neg_seqs:
+			fnf.write(">" + seq_name + '\n' + interest_dict[seq_name] + '\n')
+		fnf.close()
+
 ##################################################################################
 
 main()
