@@ -61,85 +61,74 @@ def main():
 	parser.add_argument("-f","--sample_fasta",help='A .fasta file containing the sequences in your metagenomic "sample"',required=True)
 	parser.add_argument("-id","--identifier",help='The identifier for the correct sequence within the fasta file (i.e. "COG0088")',required=True)
 	parser.add_argument("-l","--oligo_list",help='A .csv file containing the representative list from your training data set\n(i.e. only the sequences you are interested in capturing)',required=True)
-	parser.add_argument("-fpo","--false_pos_outfile",help='An output .csv file to store data about the precision statistics',required=False,default=None)
-	parser.add_argument("-fno","--false_neg_outfile",help='An output .fasta file to store false negative sequences',required=False,default=None)
+	parser.add_argument("-o","--outfile",help='An output .csv file to store sequences that were retrieved and the kmers that retrieved them',required=False,default=None)
 	args = parser.parse_args()
 
 	oligo_list = store_kmerlist(args.oligo_list)
 
 	interest_dict, noise_dict = store_seqs_w_id(args.sample_fasta,args.identifier)
 
-	if args.false_pos_outfile != None:
-		f = open(args.false_pos_outfile,'w')
-		line1 = "false_pos_seq_name,COG_name,kmers_hit\n"
-		f.write(line1)
-
-	true_pos = 0
-	true_neg = 0
-	false_pos = 0
-	false_neg = 0
+	true_pos_seqs = []
+	true_neg_seqs = []
+	false_pos_seqs = []
 	false_neg_seqs = []
+
+	hit_dict = {}
 
 	for seq_name in interest_dict:
 		covered = False
 		for oligo in oligo_list:
-			complement = find_rev_complement(oligo)
-			if (oligo in interest_dict[seq_name]) or (complement in interest_dict[seq_name]):
+			if (oligo in interest_dict[seq_name]):
 				covered = True
-				true_pos += 1
-				break
-		if not covered:
+				hit_dict.setdefault(seq_name,[])
+				hit_dict[seq_name].append(oligo)
+		if covered == True:
+			true_pos_seqs.append(seq_name)
+		if covered == False:
 			false_neg_seqs.append(seq_name)
-			false_neg += 1
-
-	false_pos_dict = {}
 
 	for seq_name in noise_dict:
 		covered = False
 		for oligo in oligo_list:
 			complement = find_rev_complement(oligo)
-			if args.false_pos_outfile == None:
-				if (oligo in noise_dict[seq_name]) or (complement in noise_dict[seq_name]):
-					covered = True
-					false_pos += 1
-					break
-			else:
-				if (oligo in noise_dict[seq_name]) or (complement in noise_dict[seq_name]):
-					covered = True
-					if seq_name not in false_pos_dict:
-						false_pos += 1
-						false_pos_dict[seq_name] = [oligo]
-					else:
-						false_pos_dict[seq_name].append(oligo)
-		if not covered:
-			true_neg += 1
+			if oligo in noise_dict[seq_name]:
+				covered = True
+				hit_dict.set_default(seq_name,[])
+				hit_dict[seq_name].append(oligo)
+			if complement in noise_dict[seq_name]:
+				covered = True
+				hit_dict.setdefault(seq_name,[])
+				hit_dict[seq_name].append("*" + complement)
+		if covered == True:
+			false_pos_seqs.append(seq_name)
+		if covered == False:
+			true_neg_seqs.append(seq_name)
 
-	recall = None
-	precision = None
-	if true_pos != 0:
-		recall = float(Fraction(true_pos,(true_pos + false_neg))*100)
-		precision = float(Fraction(true_pos,(true_pos + false_pos))*100)
-	else:
-		recall = 0
-		precision = 0
+	if args.outfile != None:
+		f = open(args.outfile,'w')
+		first_line = "COG_id,sequence_id,kmers_in_seq\n"
+		f.write(first_line)
 
-	print("Recall: " + str(recall) + "%")
-	print("Precision: " + str(precision) + "%")
-	print("Of the " + str(len(noise_dict)) + " sequences that were not " + args.identifier + ", we identified " + str(true_neg) + " as true negatives")
-
-	if args.false_pos_outfile != None:
-		for seq_name in false_pos_dict:
-			COG_name = seq_name[-7:]
-			kmers = ','.join(false_pos_dict[seq_name])
-			line = seq_name + ',' + COG_name + ',' + kmers + '\n'
+		for seq_name in hit_dict:
+			COG_id = seq_name[-7:]
+			line = COG_id + ',' + seq_name + ',' + (',').join(hit_dict[seq_name]) + '\n'
 			f.write(line)
+
 		f.close()
 
-	if args.false_neg_outfile != None:
-		fnf = open(args.false_neg_outfile,'w')
-		for seq_name in false_neg_seqs:
-			fnf.write(">" + seq_name + '\n' + interest_dict[seq_name] + '\n')
-		fnf.close()
+	recall_frac = Fraction(len(true_pos_seqs),(len(true_pos_seqs) + len(false_neg_seqs)))
+	precision_frac = Fraction(len(true_pos_seqs),(len(true_pos_seqs) + len(false_pos_seqs)))
+
+
+	recall_str = str(100 * float(recall_frac))[:5]
+	precision_str = str(100 * float(precision_frac))[:5]
+
+	print("\nRecall is " + recall_str + "%")
+	print("Of " + str(len(interest_dict)) + " " + args.identifier + " sequences in the sample, " + str(len(true_pos_seqs)) + " were captured.\n")
+	print("Precision is " + precision_str + "%")
+	print("Of " + str(len(noise_dict)) + " non-" + args.identifier + " sequences in the sample, " + str(len(false_pos_seqs)) + " were captured as false positives")
+	if args.outfile != None:
+		print("These sequences will be included in the output .csv file")
 
 ##################################################################################
 
