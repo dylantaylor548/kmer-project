@@ -101,8 +101,41 @@ def test_kmer_on_frag(kmer,rev_dict,chosen_locs,frag_size,k_len):
 	return True
 
 
+# Determines the GC content (as a decimal) of a string
+def getGC(dna):
+	GC = 0
+	dna = dna.upper()
+	i = 0
+	while i < len(dna):
+		base = dna[i]
+		if base == 'G' or base == 'C':
+			GC = GC + 1
+		i += 1
+	content = Fraction(GC, len(dna))
+	return content
+
+
+# Finds the longest run of a single letter (base) within a string (DNA sequence)
+def getLongRun(dna):
+	current_run = 1
+	long_run = 0
+	i = 1
+	while i < len(dna):
+		if dna[i] == dna[i-1]:
+			current_run += 1
+		else:
+			if current_run > long_run:
+				long_run = current_run
+			current_run = 1
+		i += 1
+	if current_run > long_run:
+		long_run = current_run
+	return long_run
+
+
 # In a reference kmer worth dictionary and reverse dictionary, returns the kmer with the highest worth.
-# In the case of ties, returns the kmer that covers the most sequences. In the case of further ties,
+# In the case of ties, returns the kmer that covers the most sequences. Then the kmer with GC content
+# closest to 50%, then the kmer with the shortest run of one base. In the case of further ties,
 # returns the kmer with the lowest lexographic value
 def findkmax(rev_dict,worth_dict,chosen_kmer_locs,frag_size,k_len):
 	kmax = ''
@@ -121,7 +154,13 @@ def findkmax(rev_dict,worth_dict,chosen_kmer_locs,frag_size,k_len):
 					if len(rev_dict[kmer]) > len(rev_dict[kmax]):
 						kmax = kmer
 					elif len(rev_dict[kmer]) == len(rev_dict[kmax]):
-						kmax = min(kmer,kmax)
+						if abs(getGC(kmer) - Fraction(1,2)) < abs(getGC(kmax) - Fraction(1,2)):
+							kmax = kmer
+						elif abs(getGC(kmer) - Fraction(1,2)) == abs(getGC(kmax) - Fraction(1,2)):
+							if getLongRun(kmer) < getLongRun(kmax):
+								kmax = kmer
+							elif getLongRun(kmer) == getLongRun(kmax):
+								kmax = min(kmer,kmax)
 
 	for seq in rev_dict[kmax]:
 		for loc in rev_dict[kmax][seq]:
@@ -154,7 +193,7 @@ def rep_kmers_indict(kmerdict,cutoff,frag_size,k_len):
 		else:
 			kmer_max,worth_dict,chosen_kmer_locs = findkmax(rev_dict,worth_dict,chosen_kmer_locs,frag_size,k_len)
 			rep_kmer_list.append(kmer_max)
-			print(time.strftime("%c") + ": Highest coverage kmer is: " + kmer_max + ", with worth: " + str(worth_dict[kmer_max]) + " and coverage: " + str(len(rev_dict[kmer_max])))
+			print(time.strftime("%c") + ": Highest coverage kmer is: " + kmer_max + ", with worth: " + str(worth_dict[kmer_max]) + ", coverage: " + str(len(rev_dict[kmer_max])) + ", and GC content: " + str(getGC(kmer_max)))
 			for seq in rev_dict[kmer_max]:
 				for kmer in kmerdict[seq]:
 					if seq_counts[seq] < cutoff:
@@ -234,6 +273,11 @@ def main():
 	if rep_list:
 		for element in rep_list:
 			fw.write(element+'\n')
+			"""line = element
+			for seq in reverse_dict(kmerized_fasta)[element]:
+				line += ',' + seq
+			line += '\n'
+			fw.write(line)"""
 
 
 	print("There are " + str(len(rep_list)) + " " + str(args.kmer_len) + "-mers in the representative list.")
