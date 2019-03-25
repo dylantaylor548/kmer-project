@@ -26,8 +26,8 @@ def fasta_iter(fasta_name):
 	fh = open(fasta_name)
 	faiter = (x[1] for x in groupby(fh, lambda line: line[0] == ">"))
 	for header in faiter:
-		header = header.__next__()[1:].strip()
-		seq = "".join(s.strip() for s in faiter.__next__())
+		header = header.next()[1:].strip()
+		seq = "".join(s.strip() for s in faiter.next())
 		yield header, seq
 
 
@@ -88,29 +88,6 @@ def checkcoverage(kmer,seq_kmers_dict,coverage_dict,cutoff):
 	return True
 
 
-# In a reference kmer worth dictionary and reverse dictionary, returns the kmer with the highest worth.
-# In the case of ties, returns the kmer that covers the most sequences. In the case of further ties,
-# returns the kmer with the lowest lexographic value
-def findkmax(rev_dict,worth_dict,chosen_kmer_locs,frag_size,k_len):
-	kmax = ''
-	worthcopy = copy.deepcopy(worth_dict)
-	for kmer in worth_dict:
-		if worth_dict[kmer] <= 0:
-			del worthcopy[kmer]
-		else:
-			if test_kmer_on_frag(kmer,rev_dict,chosen_kmer_locs,frag_size,k_len):
-				if kmax == '':
-					kmax = kmer
-				elif worth_dict[kmer] > worth_dict[kmax]:
-					kmax = kmer
-				elif worth_dict[kmer] == worth_dict[kmax]:
-					if len(rev_dict[kmer]) > len(rev_dict[kmax]):
-						kmax = kmer
-					elif len(rev_dict[kmer]) == len(rev_dict[kmax]):
-						kmax = min(kmer,kmax)
-	return kmax, worthcopy
-
-
 # For a given kmer, checks whether that kmer could possibly end up on the same fragment
 # as another kmer that has already been chosen
 def test_kmer_on_frag(kmer,rev_dict,chosen_locs,frag_size,k_len):
@@ -122,6 +99,35 @@ def test_kmer_on_frag(kmer,rev_dict,chosen_locs,frag_size,k_len):
 					return False
 
 	return True
+
+
+# In a reference kmer worth dictionary and reverse dictionary, returns the kmer with the highest worth.
+# In the case of ties, returns the kmer that covers the most sequences. In the case of further ties,
+# returns the kmer with the lowest lexographic value
+def findkmax(rev_dict,worth_dict,chosen_kmer_locs,frag_size,k_len):
+	kmax = ''
+	worthcopy = copy.deepcopy(worth_dict)
+	for kmer in worth_dict:
+		if worth_dict[kmer] <= 0:
+			del worthcopy[kmer]
+		else:
+			test_kmer = test_kmer_on_frag(kmer,rev_dict,chosen_kmer_locs,frag_size,k_len)
+			if test_kmer == True:
+				if kmax == '':
+					kmax = kmer
+				elif worth_dict[kmer] > worth_dict[kmax]:
+					kmax = kmer
+				elif worth_dict[kmer] == worth_dict[kmax]:
+					if len(rev_dict[kmer]) > len(rev_dict[kmax]):
+						kmax = kmer
+					elif len(rev_dict[kmer]) == len(rev_dict[kmax]):
+						kmax = min(kmer,kmax)
+
+	for seq in rev_dict[kmax]:
+		for loc in rev_dict[kmax][seq]:
+			chosen_kmer_locs[seq].append(loc)
+
+	return kmax, worthcopy, chosen_kmer_locs
 
 
 # Given a kmer dictionary and a cutoff, returns a list of kmers such that each
@@ -146,7 +152,7 @@ def rep_kmers_indict(kmerdict,cutoff,frag_size,k_len):
 			print("Your value of c is too high, not enough unique kmers were found.")
 			return
 		else:
-			kmer_max,worth_dict = findkmax(rev_dict,worth_dict)
+			kmer_max,worth_dict,chosen_kmer_locs = findkmax(rev_dict,worth_dict,chosen_kmer_locs,frag_size,k_len)
 			rep_kmer_list.append(kmer_max)
 			print(time.strftime("%c") + ": Highest coverage kmer is: " + kmer_max + ", with worth: " + str(worth_dict[kmer_max]) + " and coverage: " + str(len(rev_dict[kmer_max])))
 			for seq in rev_dict[kmer_max]:
@@ -159,15 +165,49 @@ def rep_kmers_indict(kmerdict,cutoff,frag_size,k_len):
 			del worth_dict[kmer_max]
 
 	print("\nChecking output for redundant kmers...\n")
-	rep_list_copy = copy.deepcopy(rep_kmer_list)
-	for kmer in rep_list_copy:
+	redundant_kmers = []
+	for kmer in rep_kmer_list:
 		if checkcoverage(kmer,kmerdict,seq_counts,cutoff):
-			print(kmer + " is redundant.")
-			rep_kmer_list.remove(kmer)
-			for seq in kmerdict:
-				if kmer in kmerdict[seq]:
-					seq_counts[seq] -= 1
-					
+			redundant_kmers.append(kmer)
+
+	while redundant_kmers != []:
+		
+		least_coverage = None
+		for kmer in redundant_kmers:
+			for seq in rev_dict[kmer]:
+				if least_coverage == None:
+					least_coverage = seq_counts[seq]
+				elif seq_counts[seq] < least_coverage:
+					least_coverage = seq_counts[seq]
+		
+		most_redundant_kmer = ''
+		least_cov_counts = None
+
+		for kmer in redundant_kmers:
+			count = 0
+			for seq in rev_dict[kmer]:
+				if seq_counts[seq] == least_coverage:
+					count += 1
+			if least_cov_counts == None:
+				most_redundant_kmer = kmer
+				least_cov_counts = count
+			elif count < least_cov_counts:
+				most_redundant_kmer = kmer
+				least_cov_counts = count
+
+		rep_kmer_list.remove(most_redundant_kmer)
+		redundant_kmers.remove(most_redundant_kmer)
+		print(most_redundant_kmer + " is redundant...")
+
+		for seq in rev_dict[most_redundant_kmer]:
+			seq_counts[seq] -= 1
+		
+		new_redun_kmers = []
+		for kmer in redundant_kmers:
+			if checkcoverage(kmer,kmerdict,seq_counts,cutoff):
+				new_redun_kmers.append(kmer)
+		redundant_kmers = new_redun_kmers
+
 	return rep_kmer_list
 
 
@@ -202,7 +242,7 @@ def main():
 	runtime = end_time - start_time
 	seconds = int(runtime % 60)
 	minutes = int(runtime/60)
-	print("It took " + str(minutes) + " minutes and " + str(seconds) + " seconds to generate a list from " + str(len(kmerized_dir)) + " sequences.")
+	print("It took " + str(minutes) + " minutes and " + str(seconds) + " seconds to generate a list from " + str(len(kmerized_fasta)) + " sequences.")
 
 ################################################################ ^^^ This is the part that does the code ^^^
 
