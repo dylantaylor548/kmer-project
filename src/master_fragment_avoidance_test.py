@@ -37,6 +37,7 @@ def fasta_iter(fasta_name):
 # kmer appears
 def kmerize_fasta(file_path,kmer_size):
 	kmerdict = {}
+	seqdict = {}
 	print("Generating " + str(kmer_size)+ "-mers\n...")
 
 	fiter = fasta_iter(file_path)
@@ -45,9 +46,9 @@ def kmerize_fasta(file_path,kmer_size):
 		sequence = ff[1]
 		kmers_in_dna = kmerize(sequence,kmer_size)
 		kmerdict[header] = kmers_in_dna
-		# kmerdict[header] = kmers_in_dna
+		seqdict[header] = sequence
 	print("\nAll " + str(kmer_size)+ "-mers generated!\n")
-	return kmerdict
+	return kmerdict, seqdict
 
 
 # Reverses the kmerdict such that the keys are all the kmers in the fasta file
@@ -89,14 +90,27 @@ def checkcoverage(kmer,seq_kmers_dict,coverage_dict,cutoff):
 
 
 # For a given kmer, checks whether that kmer could possibly end up on the same fragment
-# as another kmer that has already been chosen
-def test_kmer_on_frag(kmer,rev_dict,chosen_locs,frag_size,k_len):
+# as another kmer that has already been chosen. It now also avoids kmers that are within regions
+# that do not produce useful reads (those that allow you to distinguish between sequences)
+def test_kmer_on_frag(seqdict,kmer,rev_dict,chosen_locs,frag_size,k_len):
 
+	read_regions = []
 	for seq in rev_dict[kmer]:
+		sequence = seqdict[seq]
 		for kmer_loc in rev_dict[kmer][seq]:
 			for loc in chosen_locs[seq]:
 				if abs(kmer_loc - loc) <= (frag_size - k_len):
 					return False
+			if len(sequence) > kmer_loc + frag_size:
+				region = sequence[(kmer_loc-(frag_size-k_len)):(kmer_loc+frag_size)]
+				read_regions.append(region)
+			else:
+				region = sequence[(kmer_loc-(frag_size-k_len)):]
+				read_regions.append(region)
+	"""if len(set(read_regions)) == 1 and len(read_regions) != 1:"""
+	if len(set(read_regions)) < len(read_regions):
+		return False
+
 
 	return True
 
@@ -137,14 +151,14 @@ def getLongRun(dna):
 # In the case of ties, returns the kmer that covers the most sequences. Then the kmer with GC content
 # closest to 50%, then the kmer with the shortest run of one base. In the case of further ties,
 # returns the kmer with the lowest lexographic value
-def findkmax(rev_dict,worth_dict,chosen_kmer_locs,frag_size,k_len):
+def findkmax(seqdict,rev_dict,worth_dict,chosen_kmer_locs,frag_size,k_len):
 	kmax = ''
 	worthcopy = copy.deepcopy(worth_dict)
 	for kmer in worth_dict:
 		if worth_dict[kmer] <= 0:
 			del worthcopy[kmer]
 		else:
-			test_kmer = test_kmer_on_frag(kmer,rev_dict,chosen_kmer_locs,frag_size,k_len)
+			test_kmer = test_kmer_on_frag(seqdict,kmer,rev_dict,chosen_kmer_locs,frag_size,k_len)
 			if test_kmer == True:
 				if kmax == '':
 					kmax = kmer
@@ -172,7 +186,7 @@ def findkmax(rev_dict,worth_dict,chosen_kmer_locs,frag_size,k_len):
 # Given a kmer dictionary and a cutoff, returns a list of kmers such that each
 # sequence in the dictionary is represented in the list by at least the cutoff
 # (This has been tested and works)
-def rep_kmers_indict(kmerdict,cutoff,frag_size,k_len):
+def rep_kmers_indict(seqdict,kmerdict,cutoff,frag_size,k_len):
 	rev_dict = reverse_dict(kmerdict)
 	seq_counts = generate_seq_counts(kmerdict)
 	rep_kmer_list = []
@@ -191,7 +205,7 @@ def rep_kmers_indict(kmerdict,cutoff,frag_size,k_len):
 			print("Your value of c is too high, not enough unique kmers were found.")
 			return
 		else:
-			kmer_max,worth_dict,chosen_kmer_locs = findkmax(rev_dict,worth_dict,chosen_kmer_locs,frag_size,k_len)
+			kmer_max,worth_dict,chosen_kmer_locs = findkmax(seqdict,rev_dict,worth_dict,chosen_kmer_locs,frag_size,k_len)
 			rep_kmer_list.append(kmer_max)
 			print(time.strftime("%c") + ": Highest coverage kmer is: " + kmer_max + ", with worth: " + str(worth_dict[kmer_max]) + ", coverage: " + str(len(rev_dict[kmer_max])) + ", and GC content: " + str(getGC(kmer_max)))
 			for seq in rev_dict[kmer_max]:
@@ -266,9 +280,15 @@ def main():
 	start_time = time.time()
 
 	kmerized_fasta = {}
-	kmerized_fasta = kmerize_fasta(args.fasta_file,int(args.kmer_len))
+	kmerized_fasta, fasta_seqs = kmerize_fasta(args.fasta_file,int(args.kmer_len))
 
-	rep_list = rep_kmers_indict(kmerized_fasta, int(args.cutoff_value),int(args.frag_size), int(args.kmer_len))
+	sequences = []
+	for seq in fasta_seqs:
+		if fasta_seqs[seq] in sequences:
+			print(seq + " has already shown up in the fasta file")
+		sequences.append(fasta_seqs[seq])
+
+	rep_list = rep_kmers_indict(fasta_seqs, kmerized_fasta, int(args.cutoff_value),int(args.frag_size), int(args.kmer_len))
 	fw = open(args.out_file, 'w')
 	if rep_list:
 		for element in rep_list:

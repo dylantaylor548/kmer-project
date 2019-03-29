@@ -93,7 +93,7 @@ def main():
 			complement = find_rev_complement(oligo)
 			if oligo in noise_dict[seq_name]:
 				covered = True
-				hit_dict.set_default(seq_name,[])
+				hit_dict.setdefault(seq_name,[])
 				hit_dict[seq_name].append(oligo)
 			if complement in noise_dict[seq_name]:
 				covered = True
