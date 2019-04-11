@@ -170,9 +170,10 @@ def main():
 						if seq in avg_read_cov[oligo]:
 							seqs_bound_oligos[oligo][seq][read] = floor(avg_read_cov[oligo][seq]*(avail_reads/needed_reads))
 							overassigned_reads[oligo][read] -= floor(avg_read_cov[oligo][seq]*(avail_reads/needed_reads))
+	
+
 	# Once this step is done, we should be left with a dictionary of oligos and reads containing those oligos that have not been attributed to any sequences.
 	# Now what we want to do is to assign these reads evenly to those sequences that have not had any reads assigned to them so far
-
 	for oligo in overassigned_reads:
 		for read in overassigned_reads[oligo]:
 			avail_reads = overassigned_reads[oligo][read]
@@ -190,6 +191,28 @@ def main():
 					overassigned_reads[oligo][read] -= quant
 
 	seq_presence = condense_read_info(seqs_bound_oligos)
+
+
+	# Now we need to normalize the values of the sequences assigned to each kmer based on the spike sequence for that kmer. For each spike sequence, 
+	# determine the kmer for which that spike sequence's count is highest, and multiply the values of the sequences on all kmers that match that spike
+	# sequence such that the counts of that spike sequence on each are the same.
+	for spike in spikes:
+		kmer_matches = []
+		max_spike = 0
+		for kmer in seq_presence:
+			if spike in seq_presence[kmer]:
+				kmer_matches.append(kmer)
+				if seq_presence[kmer][spike] > max_spike:
+					max_spike = seq_presence[kmer][spike]
+		for kmer in kmer_matches:
+			spike_pres = seq_presence[kmer][spike]
+			for seq in seq_presence[kmer]:
+				seq_presence[kmer][seq] *= (max_spike/spike_pres) 
+
+
+
+
+
 
 	print(seq_presence)
 						

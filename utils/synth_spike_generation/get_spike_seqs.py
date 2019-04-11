@@ -65,7 +65,6 @@ def gen_spikes(oligos, frag_len, seq_len, spike_tag):
 			spike_id = random.choice(alphabet) + random.choice(alphabet) + random.choice(alphabet) + random.choice(alphabet) + random.choice(alphabet) + spike_tag + random.choice(alphabet) + random.choice(alphabet) + random.choice(alphabet) + random.choice(alphabet) + random.choice(alphabet)
 			if spike_id not in ids:
 				ids += spike_id
-				print(spike_id)
 				break
 		first_base = spike_id[0]
 		spike = ''
