@@ -3,6 +3,13 @@ from itertools import groupby
 from math import floor
 
 
+def mean(num_list):
+	total = 0 
+	for item in num_list:
+		total += item
+	avg = total / len(num_list)
+	return avg 
+
 def FASTQ_iter(fastq_name):
 	fq = open(fastq_name)
 	fqiter = (x[1] for x in groupby(fq, lambda line: line[0] == "@"))
@@ -91,20 +98,21 @@ def main():
 	parser.add_argument('-c','--chip',help='A .csv file containing your generated oligos AND their presence on the chip',required=True)
 	args = parser.parse_args()"""
 
-	fasta_file = 'C:/Users/Dylan/Desktop/Pop_Lab/kmer_project/data/TIGR02012/TIGR02012_100.fasta'
+	fasta_file = 'C:/Users/Dylan/Desktop/Pop_Lab/kmer_project/data/TIGR02012/TIGR02012_83.fasta'
 	fastq_reads = 'C:/Users/Dylan/Desktop/TIGR_sample.fq'
-	chip = 'C:/Users/Dylan/Desktop/tmp_chip.csv'
-	"""spike_seqs = 'C:/Users/Dylan/Desktop/Pop_Lab/kmer_project/data/COG0088/COG0088_10000.fasta'"""
+	chip = 'C:/Users/Dylan/Desktop/test_chip.csv'
+	spike_seqs = 'C:/Users/Dylan/Desktop/test_spikes.fasta'
 
 	seqdict = fasta2dict(fasta_file)
 	readsdict, read_qual = fastq2dict(fastq_reads)
-	"""spikes = fasta2dict(spike_seqs)"""
+
+	spikes = fasta2dict(spike_seqs)
 	
 	known_seqs = {}
 	for seq in seqdict:
 		known_seqs[seq] = seqdict[seq]
-	"""for seq in spikes:
-		known_seqs[seq] = spikes[seq]"""
+	for seq in spikes:
+		known_seqs[seq] = spikes[seq]
 
 	chipcovdict = chip2oligos(chip)
 
@@ -126,7 +134,7 @@ def main():
 				oligo_matches.append(oligo)
 		if len(oligo_matches) == 1:
 			oligo_match = oligo_matches[0]
-			seq_matches = []
+			"""seq_matches = []
 			for seq in kmerdict[oligo_match]:
 				if read_seq in known_seqs[seq]:
 					seq_matches.append(seq)
@@ -137,7 +145,12 @@ def main():
 				seqs_bound_oligos[oligo_match][seq_match][read_seq] += 1
 			elif len(seq_matches) > 1:
 				overassigned_reads[oligo_match].setdefault(read_seq,0)
-				overassigned_reads[oligo_match][read_seq] += 1
+				overassigned_reads[oligo_match][read_seq] += 1"""
+			seq_match = read.split(".")[1]                                                    # The next four lines (including this one) are temporary testing lines and should not be present in the final code
+			seqs_bound_oligos[oligo_match].setdefault(seq_match,{})
+			seqs_bound_oligos[oligo_match][seq_match].setdefault(read_seq,0)
+			seqs_bound_oligos[oligo_match][seq_match][read_seq] += 1
+
 
 	avg_read_cov = {}
 	for oligo in chipcovdict:
@@ -196,6 +209,7 @@ def main():
 	# Now we need to normalize the values of the sequences assigned to each kmer based on the spike sequence for that kmer. For each spike sequence, 
 	# determine the kmer for which that spike sequence's count is highest, and multiply the values of the sequences on all kmers that match that spike
 	# sequence such that the counts of that spike sequence on each are the same.
+	norm_seq_pres = {}
 	for spike in spikes:
 		kmer_matches = []
 		max_spike = 0
@@ -207,17 +221,35 @@ def main():
 		for kmer in kmer_matches:
 			spike_pres = seq_presence[kmer][spike]
 			for seq in seq_presence[kmer]:
-				seq_presence[kmer][seq] *= (max_spike/spike_pres) 
+				norm_seq_pres.setdefault(kmer,{})
+				norm_seq_pres[kmer][seq] = seq_presence[kmer][seq]*(max_spike/spike_pres)
 
 
+	# Now that we've normalized each kmer based on the spike sequence that it corresponds to, we need to determine the average presence of each sequence,
+	# across the kmers for a single spike sequence 
+	# ***(we will assume for now that there will only be a single spike sequence that covers every kmer on the chip)***
+	total_abundance = 0
 
+	seq_vals = {}
+	for kmer in norm_seq_pres:
+		for seq in norm_seq_pres[kmer]:
+			seq_vals.setdefault(seq,[])
+			seq_vals[seq].append(norm_seq_pres[kmer][seq])
+	avg_seq_vals = {}
+	for seq in seq_vals:
+		if seq not in spikes:
+			average_abund = mean(seq_vals[seq])
+			avg_seq_vals[seq] = average_abund
+			total_abundance += average_abund
 
+	percent_abundance = {}
+	for seq in avg_seq_vals:
+		percent_abundance[seq] = 100 * (avg_seq_vals[seq]/total_abundance)
 
-
-	print(seq_presence)
-						
-
-
+	output = open('C:/Users/Dylan/Desktop/tmp_calc_abund.csv','w')
+	for seq in percent_abundance:
+		output.write(seq + ',' + str(percent_abundance[seq]) + '\n')
+	output.close()
 
 ##############################################################################################################################################################################################
 
