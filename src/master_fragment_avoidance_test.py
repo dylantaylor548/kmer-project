@@ -101,9 +101,10 @@ def test_kmer_on_frag(seqdict,kmer,rev_dict,chosen_locs,frag_size,k_len):
 			for loc in chosen_locs[seq]:
 				if abs(kmer_loc - loc) <= (frag_size - k_len):
 					return False
-			if (kmer_loc > len(sequence) - frag_size) or (kmer_loc < frag_size - k_len):
+			"""if (kmer_loc > len(sequence) - frag_size) or (kmer_loc < frag_size - k_len):  # Temporarily removed to improve performance
 				return False
-			elif len(sequence) > kmer_loc + frag_size:
+			el"""
+			if len(sequence) > kmer_loc + frag_size:
 				region = sequence[(kmer_loc-(frag_size-k_len)):(kmer_loc+frag_size)]
 				read_regions.append(region)
 			else:

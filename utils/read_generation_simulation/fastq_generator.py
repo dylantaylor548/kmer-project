@@ -66,7 +66,7 @@ def main():
 			presence = 10000 * random.choice([x for x in range(50,read_choices+1)])  # This has been edited such that the spike sequnece will be present 500000 times
 		simulated_presence[seq] = presence
 
-	output = open('C:/Users/Dylan/Desktop/tmp_sim_pres.csv','w')
+	output = open(outfile[:-6] + '_sim_abundance.csv','w')
 	for seq in simulated_presence:
 		output.write(seq + ',' + str(simulated_presence[seq]) + '\n')
 	output.close()
