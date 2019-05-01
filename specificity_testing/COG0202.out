@@ -1,0 +1,7 @@
+
+Recall is 95.95%
+Of 8223 COG0202 sequences in the sample, 7890 were captured.
+
+Precision is 99.52%
+Of 1601092 non-COG0202 sequences in the sample, 38 were captured as false positives
+These sequences will be included in the output .csv file

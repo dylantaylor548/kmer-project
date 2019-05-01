@@ -1,0 +1,7 @@
+
+Recall is 96.84%
+Of 8110 COG0541 sequences in the sample, 7841 were captured.
+
+Precision is 91.20%
+Of 1601645 non-COG0541 sequences in the sample, 756 were captured as false positives
+These sequences will be included in the output .csv file
