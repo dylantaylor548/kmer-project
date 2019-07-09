@@ -154,7 +154,7 @@ def main():
 				oligo_matches.append(oligo)
 		if len(oligo_matches) == 1:
 			oligo_match = oligo_matches[0]
-			seq_matches = []
+			"""seq_matches = []
 			for seq in kmerdict[oligo_match]:
 				if read_seq in known_seqs[seq]:
 					seq_matches.append(seq)
@@ -165,11 +165,11 @@ def main():
 				seqs_bound_oligos[oligo_match][seq_match][read_seq] += 1
 			elif len(seq_matches) > 1:
 				overassigned_reads[oligo_match].setdefault(read_seq,0)
-				overassigned_reads[oligo_match][read_seq] += 1
-			"""seq_match = read.split(".")[1]                                                    # The next four lines (including this one) are temporary testing lines and should not be present in the final code
+				overassigned_reads[oligo_match][read_seq] += 1"""
+			seq_match = read.split(".")[1]                                                    # The next four lines (including this one) are temporary testing lines and should not be present in the final code
 			seqs_bound_oligos[oligo_match].setdefault(seq_match,{})
 			seqs_bound_oligos[oligo_match][seq_match].setdefault(read_seq,0)
-			seqs_bound_oligos[oligo_match][seq_match][read_seq] += 1"""
+			seqs_bound_oligos[oligo_match][seq_match][read_seq] += 1
 
 	avg_read_cov = {}
 	for oligo in chipcovdict:

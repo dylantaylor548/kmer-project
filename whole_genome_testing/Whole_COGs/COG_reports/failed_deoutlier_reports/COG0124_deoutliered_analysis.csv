@@ -1,0 +1,6 @@
+Gene name(s),Description,Hits,Average Oligo presence,Average Hamming Distance
+hisS;Moth_1677;MAB_2872c;Dtur_0969;KPHS_39160;ECL_03856;Caur_2942;BF3416;FN0298;Taci_0581;hisS-1;Mesci_2531;EAE_02565;CCNA_03628,histidyl-tRNA synthetase,120,3.08,57.94
+aspS,aspartate--tRNA(Asp/Asn) ligase,2,1.0,1302.0
+bll5899,hypothetical protein,1,1.0,1018.0
+hisS2,histidine--tRNA ligase,1,4.0,0.0
+Moth_2037;hisZ,ATP phosphoribosyltransferase regulatory subunit,2,1.0,345.5

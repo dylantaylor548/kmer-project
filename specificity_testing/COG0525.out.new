@@ -1,7 +1,0 @@
-
-Recall is 98.16%
-Of 8172 COG0525 sequences in the sample, 8008 were captured.
-
-Precision is 89.09%
-Of 1601332 non-COG0525 sequences in the sample, 980 were captured as false positives
-These sequences will be included in the output .csv file

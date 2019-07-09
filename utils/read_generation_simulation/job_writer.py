@@ -1,6 +1,6 @@
 import os
 
-jobs = 20
+jobs = 40
 
 file_names = []
 for i in range(0,jobs):

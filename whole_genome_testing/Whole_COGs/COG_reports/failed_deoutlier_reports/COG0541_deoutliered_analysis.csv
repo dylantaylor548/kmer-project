@@ -1,0 +1,5 @@
+Gene name(s),Description,Hits,Average Oligo presence,Average Hamming Distance
+ffh;LBA1290;NRG857_12965;SAOUHSC_01207;NGO1700;RP173;Caur_2052;BT_1601;TM1565;BF3217;O3K_06380;MAB_3237c;Mfl479;Bfae_09950;srp;DR_1836;NGR_c32250;BN117_0497;SE0912;EAE_01115;LSEI_1602;ECL_03943;BC3843;CC_3653;TTHA1036;Cgl2058;Moth_0966;Psyr_1281;Mesci_0942;VC0560;KVU_2431;Dtur_1538;BAS3696;Rru_A1184;Smed_3095;FN1393;HP1152;KPHS_40480;VP2534;Taci_1418,signal recognition particle protein,118,3.55,10.75
+ftsY;Taci_1016,signal recognition particle protein,3,2.0,504.0
+ebfC,nucleoid associated protein,1,1.0,915.0
+flhF,flagellar biosynthesis regulator FlhF,1,1.0,823.0

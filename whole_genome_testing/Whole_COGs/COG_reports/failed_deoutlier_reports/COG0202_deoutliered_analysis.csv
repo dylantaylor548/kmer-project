@@ -1,0 +1,6 @@
+Gene name(s),Description,Hits,Average Oligo presence,Average Hamming Distance
+rpoA;LSEI_2477;RP635;O3K_02525;HP1293;SAOUHSC_02485;Bfae_23530;ECL_04672;CC_1272;BT_2701;rpoA2;rpoA1;FN1283;NRG857_16325;Mesci_3650;EAE_04830;Mfl150;Rru_A2664;SE1797;Taci_1155;MAB_3770c;LBA0317;BC0158;TTHA1664;BAS0137;Smed_1010;Moth_2431;NGO1818;Caur_2396;DR_2128;Psyr_4524;Dtur_1008;KPHS_48440;TM1472;VC2571;VP0282;Cgl0564;BF4155,DNA-directed RNA polymerase subunit alpha,118,3.45,1.49
+BPSL3008;BMA2531,type IV pilus assembly protein,2,1.0,887.0
+TDE1781,hypothetical protein,1,1.0,628.0
+gyrA,DNA gyrase subunit A,1,1.0,2130.0
+Psyr_3151,type II secretion system protein E,1,1.0,1399.0

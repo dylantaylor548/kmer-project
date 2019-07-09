@@ -1,7 +1,0 @@
-
-Recall is 98.43%
-Of 8201 COG0090 sequences in the sample, 8073 were captured.
-
-Precision is 99.74%
-Of 1601204 non-COG0090 sequences in the sample, 21 were captured as false positives
-These sequences will be included in the output .csv file

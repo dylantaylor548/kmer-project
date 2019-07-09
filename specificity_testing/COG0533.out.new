@@ -1,7 +1,0 @@
-
-Recall is 95.83%
-Of 8189 COG0533 sequences in the sample, 7834 were captured.
-
-Precision is 99.93%
-Of 1601247 non-COG0533 sequences in the sample, 5 were captured as false positives
-These sequences will be included in the output .csv file

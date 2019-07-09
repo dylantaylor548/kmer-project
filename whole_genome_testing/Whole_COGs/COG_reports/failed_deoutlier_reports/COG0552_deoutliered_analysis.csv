@@ -1,0 +1,28 @@
+Gene name(s),Description,Hits,Average Oligo presence,Average Hamming Distance
+ftsY;Cgl2062;fstY;Smed_3091;CC_3679;EAE_05535;BPSL0514;BAS3698;O3K_01735;Taci_1016;BN117_0888;Dtur_0948;Mesci_0980;TM0570;VC0147;CBO2451;bll0473;NRG857_17175;ECL_04826;NGO2060;HP0763;AHA_0371;FN1074;lmo1803;Rru_A1181;Mfl237;LSEI_1605;Moth_0962;MAB_3241c;BT_0914;Psyr_4751;ML1628;SC7A1.24;VP2956;KPHS_49840;BC3845;Caur_1724;BF2426;DR_2260;TTHA0436;SE0910;RP775;SAOUHSC_01205;pilA,signal recognition particle-docking protein FtsY,117,3.15,0.0
+ffh,signal recognition particle protein Ffh,4,1.25,965.75
+flhF,flagellar biosynthesis regulator FlhF,2,1.0,992.0
+BN112_1976;FN0915;SE1622;BN117_1241;SCC46.08c;glr3442;Mesci_0662;VC1525;sitB;VC1520;Atu4729;BB_0573;SC5G9.31c;Smed_2915;MSMEG_3140;BPSL2655;AMED_8719;DVU0648;NGR_c31030;Smed_2866;livF;BMA1183;BMA2180;SRU_0752;BBPR_1450;MSMEG_5312;NMB0356;Bfae_30620;NGR_c30580;Cgl1554;bll3661;BPSL1779,ABC transporter ATP-binding protein,32,1.0,743.41
+glr0251,cell division protein FtsY-like protein,1,1.0,1608.0
+NRG857_04745,hypothetical protein,1,7.0,200.0
+PSPTO_1922,major facilitator family transporter,1,1.0,928.0
+Mfl354,chromosome segregation ATPase,1,1.0,1794.0
+ftsE,non-coding,1,1.0,222.0
+VP2226,hypothetical protein,1,1.0,766.0
+acfC,accessory colonization factor AcfC,1,1.0,512.0
+NGR_c23520,hemin receptor,1,1.0,1598.0
+ECs_3507,hypothetical protein,1,2.0,862.0
+zipA,cell division protein ZipA,1,2.0,723.0
+HI0251,TonB,1,1.0,582.0
+drrA,daunorubicin resistance ATP-binding protein,1,1.0,597.0
+FP1814,Rhodanese-like domain protein,1,1.0,290.0
+BC5482,sporulation initiation inhibitor protein soj,1,1.0,526.0
+DR_1836,signal recognition particle protein,1,1.0,874.0
+SE1648,vga protein,1,2.0,1340.0
+parA,chromosome partitioning protein,1,1.0,514.0
+VCA0283,hypothetical protein,1,1.0,833.0
+flk,flagella biosynthesis regulator,1,1.0,609.0
+Psyr_1661,hypothetical protein,1,2.0,2183.0
+MSMEG_5583,HNH endonuclease,1,6.0,1263.0
+KVU_2431,signal recognition particle GTPase%2C SRP,1,1.0,991.0
+dnazX,DNA polymerase III subunit Tau,1,9.0,1485.0

@@ -1,0 +1,7 @@
+Gene name(s),Description,Hits,Average Oligo presence,Average Hamming Distance
+rplO;rl15;KPHS_48490;Dtur_0999;FN1625;LSEI_2484;Mesci_3645;Bfae_23610;Moth_2441;Taci_1165;BF4162;ECL_04678;CC_1267;Rru_A2669,50S ribosomal protein L15,116,2.76,5.93
+secY,preprotein translocase subunit SecY,2,1.0,763.0
+RSP_0658,putative ATP-dependent helicase,1,1.0,2216.0
+dal;BAS1932;dal2,alanine racemase,3,1.0,1004.33
+PA1043,hypothetical protein,1,1.0,629.0
+bll6236,ABC transporter substrate-binding protein,1,1.0,1060.0

@@ -1,7 +1,0 @@
-
-Recall is 96.77%
-Of 8222 COG0087 sequences in the sample, 7944 were captured.
-
-Precision is 100.0%
-Of 1601084 non-COG0087 sequences in the sample, 0 were captured as false positives
-These sequences will be included in the output .csv file

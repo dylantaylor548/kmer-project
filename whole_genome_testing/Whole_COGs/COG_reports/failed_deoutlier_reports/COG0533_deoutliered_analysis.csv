@@ -1,0 +1,10 @@
+Gene name(s),Description,Hits,Average Oligo presence,Average Hamming Distance
+gcp;SMU_387;SSUBM407_0157;Cj1344c;Taci_1232;Dtur_0962;QRI7;KVU_2182;STY3387;RSP_1509;MAB_3734c;LBA0390;smi_1951;BT_0920;Bfae_19380;EAE_03675;SPy_1872;Psyr_4638;BAS0247;qri7;BA_0261;CCNA_00069;BB_0769;NGO0104;CT_197;VP0408;KPHS_46030;CBO3313;O3K_03630;FN0549;Caur_0927;CLC_3255;ygiD;Rru_A3569;gcp_2;NGR_c32120;ECL_04396;RB9084;gcP;CC_0071;THEYE_A1062;LSEI_2248;NRG857_15260;DVU1840;TM0145;BF2431;Moth_2157;Mfl484;Mesci_1048;ygjD;tsaD,DNA-binding/iron metalloprotein/AP endonuclease,120,3.32,21.55
+rimI,ribosomal protein alanine acetyltransferase,2,1.0,809.0
+mscT,small-conductance mechanosensitive channel,1,1.0,687.0
+oppA_3;oppA_1;oppA3,oligopeptide ABC transporter substrate-binding protein,3,1.0,1235.0
+NGR_b21810,arsenate reductase,1,1.0,773.0
+celC,PTS system cellobiose-specific transporter subunit IIA,1,1.0,820.0
+bll7151,hypothetical protein,1,1.0,1922.0
+arcD1,arginine/ornitine antiporter,1,1.0,1126.0
+Mesci_2155,peptidyl-tRNA hydrolase,1,1.0,714.0

@@ -1,0 +1,10 @@
+Gene name(s),Description,Hits,Average Oligo presence,Average Hamming Distance
+ychF;engD;SMU_06;NRG857_06160;BN112_2537;O3K_14640;PA4673;Pro_1232;Caur_0620;LA_2329;RSP_0832;BF4579;BBPR_1196;Bfae_22930;SPy_0006;BN117_0851;AMED_8047;Rv1112;FTT_0679c;Atu2233;THEYE_A0903;CTL0347;CCNA_00512;Taci_0532;CBU_1842;yyaF;SSUBM407_0006;smi_0004;yyaL;ECL_01588;CBO1451;Cj0930;SMc02695;lp_3196;Moth_2477;BAS5328;VC2185;BQ2027_MB1142;KPHS_32420;MAB_1266;Dtur_1265;Mesci_2154;NGR_c23270;STY1910;CT0285;CD630_26620;EAE_16690,GTP-dependent nucleic acid-binding protein EngD,120,3.69,0.0
+engA,GTPase Der,4,1.0,954.25
+era,GTP-binding protein Era,2,1.0,588.0
+pap,proline iminopeptidase,1,1.0,37.0
+BN112_0974,GTP-binding protein,1,1.0,932.0
+BN112_4670,GTP-binding protein,1,1.0,589.0
+TM1239,hypothetical protein,1,1.0,382.0
+BN117_2924,GTP-binding protein,1,1.0,936.0
+rbgA,ribosomal biogenesis GTPase,1,1.0,634.0

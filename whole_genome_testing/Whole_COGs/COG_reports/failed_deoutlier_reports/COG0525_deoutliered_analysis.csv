@@ -1,0 +1,6 @@
+Gene name(s),Description,Hits,Average Oligo presence,Average Hamming Distance
+valS;Mesci_3481;Taci_0950;BF1050;Caur_2648;TM1817;CCNA_01381;Dtur_1090;MAB_1603;ECL_04596;FN2011;KPHS_05160;LSEI_1251;syv,valyl-tRNA synthetase,120,3.73,10.51
+ileS;ileS2;ECL_00834;Caur_2692;KPHS_07310,isoleucyl-tRNA synthetase,24,1.04,1935.5
+tyrS;tyrZ,tyrosine--tRNA ligase,4,1.5,1851.75
+cysS,cysteine--tRNA synthetase,2,1.5,1834.5
+Taci_0698;Caur_2759;leuS,leucyl-tRNA synthetase,3,1.0,1804.33

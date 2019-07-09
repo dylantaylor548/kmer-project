@@ -1,0 +1,9 @@
+Gene name(s),Description,Hits,Average Oligo presence,Average Hamming Distance
+cysS;cysS1;Mesci_4797;Bfae_16240;CCNA_00492;Dtur_1693;Taci_1012;KPHS_12310;Bfae_12690;ECL_01272;NGO1993;MAB_0571;FN1579;Moth_2484;BF0196,cysteine--tRNA ligase,120,2.88,63.67
+ileS;FN0067,isoleucine--tRNA ligase,8,1.0,2317.25
+valS,valyl-tRNA synthetase,4,1.0,2325.5
+metG;metS,methionyl-tRNA synthetase,4,1.0,1053.0
+tyrZ,tyrosine--tRNA ligase,1,1.0,929.0
+trpS2;DR_1093,tryptophan--tRNA ligase,2,1.0,970.5
+leuS,leucyl-tRNA synthetase,1,1.0,2103.0
+SSUBM407_1787,hypothetical protein,1,2.0,1186.0

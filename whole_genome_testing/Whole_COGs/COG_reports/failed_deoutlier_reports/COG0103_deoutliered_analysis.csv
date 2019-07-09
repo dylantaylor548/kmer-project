@@ -1,0 +1,6 @@
+Gene name(s),Description,Hits,Average Oligo presence,Average Hamming Distance
+rpsI;BF4012;rplI1;Moth_2424;ECL_04611;rs9;SMU_170;FN0330;Caur_2400;rpsI2;Taci_1527;KPHS_47690;rplI2;CCNA_01441;Mesci_4435;Bfae_23240;Dtur_1015,30S ribosomal protein S9,112,2.95,63.98
+VP0440,hypothetical protein,1,1.0,290.0
+TM0077,acetyl xylan esterase,1,1.0,842.0
+recX,recombination regulator RecX,1,2.0,536.0
+Dtur_1068,glutamate synthase,1,1.0,1248.0
